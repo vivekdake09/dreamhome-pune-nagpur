@@ -1,7 +1,6 @@
 
 import React from 'react';
 import Navbar from '../components/Navbar';
-import HeroBanner from '../components/HeroBanner';
 import PropertyFilter from '../components/PropertyFilter';
 import PropertySection from '../components/PropertySection';
 import HomeBot from '../components/HomeBot';
@@ -184,7 +183,6 @@ const Index: React.FC = () => {
       {/* New Location Search Section */}
       <LocationSearch />
       
-      <HeroBanner />
       <PropertyFilter />
       
       <PropertySection 

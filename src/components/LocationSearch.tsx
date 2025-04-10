@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, Home } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +20,7 @@ const LocationSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -41,6 +42,11 @@ const LocationSearch = () => {
     e.preventDefault();
     // Handle search submission - e.g., redirect to search results page
     console.log("Searching for properties in:", selectedLocation || searchTerm);
+  };
+
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(activeFilter === filter ? null : filter);
+    console.log(`Filter selected: ${filter}`);
   };
 
   return (
@@ -110,6 +116,45 @@ const LocationSearch = () => {
                 {loc}
               </Button>
             ))}
+          </div>
+          
+          {/* Construction Status Filter Buttons */}
+          <div className="mt-6">
+            <div className="text-center mb-3">
+              <h3 className="font-medium text-gray-700">Filter by Construction Status:</h3>
+            </div>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button
+                variant={activeFilter === "ready" ? "default" : "outline"}
+                className={`px-6 py-2 ${activeFilter === "ready" ? "bg-primary text-white" : "border-primary/60 text-primary hover:bg-primary/10"}`}
+                onClick={() => handleFilterClick("ready")}
+              >
+                <Home className="mr-2 h-4 w-4" />
+                Ready to Move
+              </Button>
+              <Button
+                variant={activeFilter === "under-construction" ? "default" : "outline"}
+                className={`px-6 py-2 ${activeFilter === "under-construction" ? "bg-primary text-white" : "border-primary/60 text-primary hover:bg-primary/10"}`}
+                onClick={() => handleFilterClick("under-construction")}
+              >
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                  <path d="M4 12h16"></path>
+                  <path d="M12 6v12"></path>
+                </svg>
+                Under Construction
+              </Button>
+              <Button
+                variant={activeFilter === "newly-launched" ? "default" : "outline"}
+                className={`px-6 py-2 ${activeFilter === "newly-launched" ? "bg-primary text-white" : "border-primary/60 text-primary hover:bg-primary/10"}`}
+                onClick={() => handleFilterClick("newly-launched")}
+              >
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Newly Launched
+              </Button>
+            </div>
           </div>
         </div>
       </div>
