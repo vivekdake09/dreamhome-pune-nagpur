@@ -2,10 +2,11 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import HeroBanner from '../components/HeroBanner';
-import PropertyCard from '../components/PropertyCard';
 import PropertyFilter from '../components/PropertyFilter';
 import PropertySection from '../components/PropertySection';
 import HomeBot from '../components/HomeBot';
+import BuilderAdCarousel from '../components/BuilderAdCarousel';
+import LocationSearch from '../components/LocationSearch';
 
 const Index: React.FC = () => {
   // Mock data for property listings
@@ -176,6 +177,13 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
+      
+      {/* New Builder Ad Carousel */}
+      <BuilderAdCarousel />
+      
+      {/* New Location Search Section */}
+      <LocationSearch />
+      
       <HeroBanner />
       <PropertyFilter />
       
