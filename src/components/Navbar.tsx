@@ -1,12 +1,22 @@
-
 import React, { useState } from 'react';
-import { Menu, X, MapPin, User, Phone } from 'lucide-react';
+import { Menu, X, MapPin, User, Phone, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useAuth } from '@/lib/auth';
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentCity, setCurrentCity] = useState<string | null>(null);
 
-  // City selection dropdown
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const cities = ['Pune', 'Nagpur'];
 
@@ -18,11 +28,15 @@ const Navbar: React.FC = () => {
     setIsCityDropdownOpen(false);
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto">
         <div className="flex justify-between items-center py-4 px-4 md:px-0">
-          {/* Logo */}
           <a href="/" className="flex items-center">
             <span className="font-bold text-2xl text-realestate-700">
               BookMyDreamHome
@@ -30,7 +44,6 @@ const Navbar: React.FC = () => {
             </span>
           </a>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <div className="relative">
               <button 
@@ -62,11 +75,50 @@ const Navbar: React.FC = () => {
             <a href="#" className="text-gray-700 hover:text-realestate-600">About Us</a>
             <a href="#" className="text-gray-700 hover:text-realestate-600">Contact</a>
             
-            {/* User actions */}
             <div className="flex items-center space-x-4">
-              <button className="flex items-center text-gray-700 hover:text-realestate-600">
-                <User className="w-5 h-5" />
-              </button>
+              {user ? (
+                <Popover>
+                  <PopoverTrigger>
+                    <Avatar>
+                      <AvatarImage src={user.user_metadata?.avatar_url} />
+                      <AvatarFallback>
+                        {user.email?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48">
+                    <div className="space-y-2">
+                      <Link 
+                        to="/profile" 
+                        className="block w-full text-left px-2 py-1.5 text-sm hover:bg-gray-100 rounded-md"
+                      >
+                        Profile
+                      </Link>
+                      <Link 
+                        to="/my-properties" 
+                        className="block w-full text-left px-2 py-1.5 text-sm hover:bg-gray-100 rounded-md"
+                      >
+                        My Properties
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md"
+                      >
+                        Log out
+                      </button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/login')}
+                  className="flex items-center gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Login
+                </Button>
+              )}
               <a href="tel:+919876543210" className="bg-realestate-600 hover:bg-realestate-700 text-white px-4 py-2 rounded-md transition duration-300 flex items-center">
                 <Phone className="w-4 h-4 mr-2" />
                 <span>Contact Us</span>
@@ -74,7 +126,6 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile menu button */}
           <button 
             className="md:hidden text-gray-700"
             onClick={toggleMenu}
@@ -83,7 +134,6 @@ const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden bg-white px-4 pt-2 pb-4 space-y-3">
             <div className="py-2">
