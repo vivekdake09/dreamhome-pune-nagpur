@@ -8,6 +8,7 @@ import { AuthProvider } from "@/lib/auth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PropertyDetailPage from "./pages/PropertyDetail";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
-            <Route path="/profile" element={<div>Profile Page Coming Soon</div>} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/my-properties" element={<div>My Properties Coming Soon</div>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
