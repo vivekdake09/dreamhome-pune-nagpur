@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from '@/lib/supabaseClient';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -23,6 +25,8 @@ const formSchema = z.object({
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [setupError, setSetupError] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,7 +38,16 @@ const Register = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     try {
+      // Check if we're using placeholder Supabase credentials
+      if (import.meta.env.VITE_SUPABASE_URL === undefined || 
+          import.meta.env.VITE_SUPABASE_URL.includes('your-project-url')) {
+        setSetupError(true);
+        setIsLoading(false);
+        return;
+      }
+      
       const { error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
@@ -46,6 +59,7 @@ const Register = () => {
           description: error.message,
           variant: "destructive",
         });
+        setIsLoading(false);
         return;
       }
 
@@ -62,6 +76,8 @@ const Register = () => {
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,6 +91,16 @@ const Register = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {setupError && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Configuration Error</AlertTitle>
+              <AlertDescription>
+                Supabase is not properly configured. Please set up valid VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -117,8 +143,8 @@ const Register = () => {
                 )}
               />
               <div className="flex flex-col gap-2">
-                <Button type="submit" className="w-full">
-                  Sign Up
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Signing Up..." : "Sign Up"}
                 </Button>
                 <div className="text-center mt-2">
                   <p className="text-sm text-gray-500">
