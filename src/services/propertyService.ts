@@ -1,4 +1,3 @@
-
 import { supabase } from '@/lib/supabaseClient';
 
 export interface PropertyData {
@@ -22,6 +21,7 @@ export interface PropertyData {
   carpet_area?: string;
   property_img_url_1?: string;
   property_img_url_2?: string;
+  property_vid_url?: string;
 }
 
 export async function fetchAllProperties(): Promise<PropertyData[]> {
@@ -104,6 +104,7 @@ function prepareSinglePropertyData(property: any): PropertyData {
     carpet_area: property.carpet_area,
     property_img_url_1: property.property_img_url_1,
     property_img_url_2: property.property_img_url_2,
+    property_vid_url: property.property_vid_url,
   };
 }
 

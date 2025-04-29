@@ -64,7 +64,7 @@ const PropertyDetailPage: React.FC = () => {
           reraInfo: propertyData.rera_info || 'RERA information not available',
           builderName: 'Information not available',
           builderDescription: propertyData.about || 'Builder information not available',
-          videoTour: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+          videoTour: propertyData.property_vid_url || null,
           floorPlans: [
             {
               title: propertyData.bedrooms ? `${propertyData.bedrooms} BHK - (${propertyData.carpet_area || 'Area not specified'})` : 'Floor Plan',

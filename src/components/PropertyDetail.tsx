@@ -39,7 +39,7 @@ interface PropertyDetailProps {
   reraInfo: string;
   builderName: string;
   builderDescription: string;
-  videoTour?: string;
+  videoTour?: string | null;
   floorPlans?: {
     title: string;
     image: string;
@@ -250,16 +250,16 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                       Video Tour
                     </h3>
                     <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-md">
-                      <iframe 
+                      <video
                         width="100%" 
-                        height="315" 
+                        height="315"
                         src={videoTour}
                         title="Property Video Tour" 
-                        frameBorder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen
+                        controls
                         className="rounded-lg"
-                      ></iframe>
+                      >
+                        Your browser does not support the video tag.
+                      </video>
                     </div>
                   </div>
                 )}
