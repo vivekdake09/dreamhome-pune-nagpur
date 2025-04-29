@@ -1,178 +1,85 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import PropertyFilter from '../components/PropertyFilter';
 import PropertySection from '../components/PropertySection';
 import HomeBot from '../components/HomeBot';
 import BuilderAdCarousel from '../components/BuilderAdCarousel';
 import LocationSearch from '../components/LocationSearch';
+import { fetchAllProperties, PropertyData } from '../services/propertyService';
+import { PropertyCardProps } from '../components/PropertyCard';
 
 const Index: React.FC = () => {
-  // Mock data for property listings
-  const readyToMoveProperties = [
-    {
-      id: "1",
-      title: "Luxurious 3 BHK Apartment in Green Valley",
-      location: "Baner, Pune",
-      price: "₹78.5 Lacs",
-      bedrooms: 3,
-      bathrooms: 3,
-      area: "1000 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80",
-      tags: ["Gym", "Swimming Pool"],
-      possession: "Ready to Move"
-    },
-    {
-      id: "2",
-      title: "Elegant 2 BHK in Prime Location",
-      location: "Kharadi, Pune",
-      price: "₹55 Lacs",
-      bedrooms: 2,
-      bathrooms: 2,
-      area: "850 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&auto=format&fit=crop&q=80",
-      isFeatured: true,
-      possession: "Ready to Move"
-    },
-    {
-      id: "3",
-      title: "Modern 1.5 BHK with Garden View",
-      location: "Hinjewadi, Pune",
-      price: "₹42 Lacs",
-      bedrooms: 1,
-      bathrooms: 1,
-      area: "650 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1599427303058-f04cbcf4756f?w=800&auto=format&fit=crop&q=80",
-      tags: ["Garden View", "Security"],
-      possession: "Ready to Move"
-    },
-    {
-      id: "4",
-      title: "Premium 2.5 BHK with Balcony",
-      location: "Wakad, Pune",
-      price: "₹65 Lacs",
-      bedrooms: 2,
-      bathrooms: 2,
-      area: "950 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3c7?w=800&auto=format&fit=crop&q=80",
-      possession: "Ready to Move"
-    }
-  ];
+  const [properties, setProperties] = useState<PropertyData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const nearingPossessionProperties = [
-    {
-      id: "5",
-      title: "Spacious 3 BHK in Green Hills",
-      location: "Viman Nagar, Pune",
-      price: "₹82 Lacs",
-      bedrooms: 3,
-      bathrooms: 2,
-      area: "1200 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&auto=format&fit=crop&q=80",
-      isNew: true,
-      possession: "Nov 2023"
-    },
-    {
-      id: "6",
-      title: "Modern 2 BHK in City Center",
-      location: "Dharampeth, Nagpur",
-      price: "₹58 Lacs",
-      bedrooms: 2,
-      bathrooms: 2,
-      area: "900 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=80",
-      tags: ["Park", "Clubhouse"],
-      possession: "Dec 2023"
-    },
-    {
-      id: "7",
-      title: "Elegant Row House with Garden",
-      location: "Ramdaspeth, Nagpur",
-      price: "₹1.2 Cr",
-      bedrooms: 3,
-      bathrooms: 3,
-      area: "1800 sq.ft.",
-      type: "Row House",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
-      isFeatured: true,
-      possession: "Jan 2024"
-    },
-    {
-      id: "8",
-      title: "Premium 4 BHK Villa",
-      location: "Civil Lines, Nagpur",
-      price: "₹1.8 Cr",
-      bedrooms: 4,
-      bathrooms: 4,
-      area: "2500 sq.ft.",
-      type: "Villa",
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop&q=80",
-      isNew: true,
-      possession: "Feb 2024"
-    }
-  ];
+  useEffect(() => {
+    const loadProperties = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchAllProperties();
+        setProperties(data);
+      } catch (err) {
+        setError('Failed to load properties. Please try again later.');
+        console.error('Error loading properties:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const recentlyLaunchedProperties = [
-    {
-      id: "9",
-      title: "Affordable 1BHK in Prime Location",
-      location: "Sadar, Nagpur",
-      price: "₹35 Lacs",
-      bedrooms: 1,
-      bathrooms: 1,
-      area: "550 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&auto=format&fit=crop&q=80",
-      isNew: true,
-      possession: "Aug 2025"
-    },
-    {
-      id: "10",
-      title: "Luxury 3 BHK in Riverside Towers",
-      location: "Baner, Pune",
-      price: "₹95 Lacs",
-      bedrooms: 3,
-      bathrooms: 3,
-      area: "1400 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&auto=format&fit=crop&q=80",
-      isNew: true,
-      possession: "Dec 2025"
-    },
-    {
-      id: "11",
-      title: "Premium 2 BHK with Lake View",
-      location: "Hinjewadi, Pune",
-      price: "₹68 Lacs",
-      bedrooms: 2,
-      bathrooms: 2,
-      area: "950 sq.ft.",
-      type: "Apartment",
-      image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&auto=format&fit=crop&q=80",
-      isFeatured: true,
-      possession: "Jun 2025"
-    },
-    {
-      id: "12",
-      title: "Elegant Studio Apartment",
-      location: "Kharadi, Pune",
-      price: "₹28 Lacs",
-      bedrooms: 1,
-      bathrooms: 1,
-      area: "400 sq.ft.",
-      type: "Studio",
-      image: "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800&auto=format&fit=crop&q=80",
-      isNew: true,
-      possession: "Jul 2025"
-    }
-  ];
+    loadProperties();
+  }, []);
 
+  // Convert database properties to PropertyCardProps format
+  const mapToPropertyCardProps = (props: PropertyData[]): PropertyCardProps[] => {
+    return props.map(prop => ({
+      id: prop.id,
+      title: prop.title,
+      location: prop.location || 'Location not specified',
+      price: prop.price || 'Price on request',
+      bedrooms: prop.bedrooms || 0,
+      bathrooms: prop.bathrooms || 0,
+      area: prop.carpet_area || '0 sq.ft.',
+      type: prop.type || 'Property',
+      image: prop.property_img_url_1 || 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80',
+      tags: prop.features_amenities && Array.isArray(prop.features_amenities) ? 
+        prop.features_amenities.slice(0, 2) : [],
+      isNew: new Date(prop.created_at || '').getTime() > (Date.now() - 7 * 24 * 60 * 60 * 1000),
+      possession: prop.status || undefined
+    }));
+  };
+
+  // Filter properties by status
+  const readyToMoveProperties = mapToPropertyCardProps(
+    properties.filter(p => p.status?.toLowerCase().includes('ready') || p.status?.toLowerCase().includes('move'))
+  );
+  
+  const nearingPossessionProperties = mapToPropertyCardProps(
+    properties.filter(p => 
+      p.status?.toLowerCase().includes('near') || 
+      p.status?.toLowerCase().includes('soon') ||
+      (p.status && !p.status.toLowerCase().includes('ready') && !p.status.toLowerCase().includes('launch'))
+    )
+  );
+  
+  const recentlyLaunchedProperties = mapToPropertyCardProps(
+    properties.filter(p => 
+      p.status?.toLowerCase().includes('launch') || 
+      p.status?.toLowerCase().includes('new') ||
+      new Date(p.created_at || '').getTime() > (Date.now() - 30 * 24 * 60 * 60 * 1000)
+    )
+  );
+
+  // Fallback to show all properties if specific categories are empty
+  const ensureMinimumProperties = (categoryProperties: PropertyCardProps[], allProperties: PropertyCardProps[], count: number = 4) => {
+    if (categoryProperties.length === 0) {
+      return allProperties.slice(0, count);
+    }
+    return categoryProperties;
+  };
+
+  const allPropertiesAsCards = mapToPropertyCardProps(properties);
+  
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -185,26 +92,38 @@ const Index: React.FC = () => {
       
       <PropertyFilter />
       
-      <PropertySection 
-        title="Ready to Move Properties" 
-        subtitle="Move into your dream home immediately" 
-        properties={readyToMoveProperties} 
-        viewAllLink="#"
-      />
-      
-      <PropertySection 
-        title="Nearing Possession" 
-        subtitle="Properties that will be ready soon" 
-        properties={nearingPossessionProperties} 
-        viewAllLink="#"
-      />
-      
-      <PropertySection 
-        title="Recently Launched" 
-        subtitle="New properties with great investment potential" 
-        properties={recentlyLaunchedProperties} 
-        viewAllLink="#"
-      />
+      {isLoading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-realestate-600"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-red-500">{error}</p>
+        </div>
+      ) : (
+        <>
+          <PropertySection 
+            title="Ready to Move Properties" 
+            subtitle="Move into your dream home immediately" 
+            properties={ensureMinimumProperties(readyToMoveProperties, allPropertiesAsCards)} 
+            viewAllLink="#"
+          />
+          
+          <PropertySection 
+            title="Nearing Possession" 
+            subtitle="Properties that will be ready soon" 
+            properties={ensureMinimumProperties(nearingPossessionProperties, allPropertiesAsCards)} 
+            viewAllLink="#"
+          />
+          
+          <PropertySection 
+            title="Recently Launched" 
+            subtitle="New properties with great investment potential" 
+            properties={ensureMinimumProperties(recentlyLaunchedProperties, allPropertiesAsCards)} 
+            viewAllLink="#"
+          />
+        </>
+      )}
       
       {/* Testimonials Section */}
       <section className="py-12 bg-gray-50">
@@ -358,7 +277,7 @@ const Index: React.FC = () => {
                 </a>
                 <a href="#" className="text-gray-400 hover:text-white">
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
+                    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
                   </svg>
                 </a>
               </div>

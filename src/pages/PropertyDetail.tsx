@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PropertyDetail from '../components/PropertyDetail';
 import HomeBot from '../components/HomeBot';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { fetchPropertyById, PropertyData } from '../services/propertyService';
 
 const PropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,105 +14,101 @@ const PropertyDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // In a real app, this would fetch data from your API
-    // For demo purposes, we'll just simulate an API call
     const fetchProperty = async () => {
       setIsLoading(true);
       try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        if (!id) {
+          throw new Error('Property ID is missing');
+        }
         
-        // Generate mock property data
-        const mockProperty = {
-          id: id || '1',
-          title: 'Luxurious 3 BHK Apartment in Green Valley',
-          description: `This luxurious 3 BHK apartment is located in one of the most prestigious societies in the area. With stunning views, modern amenities, and spacious rooms, this property offers the perfect blend of comfort and elegance.
-
-The apartment features a spacious living room with large windows that allow plenty of natural light, a modern kitchen with high-quality fittings, and three well-sized bedrooms with attached bathrooms. The master bedroom includes a walk-in closet and a premium bathroom with a bathtub.
-
-The society offers a host of amenities including a swimming pool, gymnasium, children's play area, landscaped gardens, and 24/7 security. Located close to major schools, hospitals, and shopping centers, this property offers both convenience and luxury.`,
-          location: 'Green Valley, Baner, Pune',
-          price: '₹78.5 Lacs',
-          pricePerSqFt: '₹7,850',
-          bedrooms: 3,
-          bathrooms: 3,
-          area: '1000 sq.ft.',
-          propertyType: '3 BHK Apartment',
-          furnished: 'Semi-Furnished',
-          possession: 'Ready to Move',
-          mainImage: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80',
+        const propertyData = await fetchPropertyById(id);
+        
+        if (!propertyData) {
+          throw new Error('Property not found');
+        }
+        
+        // Format the data for the PropertyDetail component
+        const formattedProperty = {
+          id: propertyData.id,
+          title: propertyData.title,
+          description: propertyData.description || 'No description available.',
+          location: propertyData.location || 'Location not specified',
+          price: propertyData.price || 'Price on request',
+          pricePerSqFt: calculatePricePerSqFt(propertyData.price, propertyData.carpet_area),
+          bedrooms: propertyData.bedrooms || 0,
+          bathrooms: propertyData.bathrooms || 0,
+          area: propertyData.carpet_area || 'Area not specified',
+          propertyType: propertyData.type || 'Not specified',
+          furnished: 'Not specified',
+          possession: propertyData.status || 'Not specified',
+          mainImage: propertyData.property_img_url_1 || 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80',
           images: [
-            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1599427303058-f04cbcf4756f?w=800&auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1600566753086-00f18fb6b3c7?w=800&auto=format&fit=crop&q=80'
-          ],
-          features: [
-            'Swimming Pool',
-            'Gymnasium',
-            'Clubhouse',
-            'Children\'s Play Area',
-            'Landscaped Gardens',
-            'Car Parking',
-            '24/7 Security',
-            'Power Backup',
-            'Lift Access',
-            'Jogging Track'
-          ],
+            propertyData.property_img_url_1,
+            propertyData.property_img_url_2,
+          ].filter(Boolean) as string[],
+          features: Array.isArray(propertyData.features_amenities) 
+            ? propertyData.features_amenities 
+            : ['No features available'],
           specifications: {
-            'Floor': '5th Floor',
-            'Total Floors': '12',
-            'Age of Property': 'New Construction',
-            'Balconies': '2',
-            'Facing': 'East',
-            'Flooring': 'Vitrified Tiles',
-            'Furnishing': 'Semi-Furnished',
-            'Car Parking': '1 Covered',
-            'Water Supply': '24/7',
-            'Electricity': '24/7 with Backup'
+            'Floor': 'Not specified',
+            'Total Floors': 'Not specified',
+            'Age of Property': 'Not specified',
+            'Balconies': 'Not specified',
+            'Facing': 'Not specified',
+            'Flooring': 'Not specified',
+            'Furnishing': 'Not specified',
+            'Car Parking': 'Not specified',
+            'Water Supply': 'Not specified',
+            'Electricity': 'Not specified'
           },
-          reraInfo: `RERA Registration Number: PREG/2023/12345
-          
-Approved on: 15th June 2023
-Valid till: 14th June 2028
-          
-Project Name: Green Valley Residences
-Project Type: Residential Apartments
-Total Units: 120
-Total Floors: 12
-          
-Developer: Dreamland Developers Pvt. Ltd.
-Developer RERA Reg No: DRER/DEV/2020/789`,
-          builderName: 'Dreamland Developers',
-          builderDescription: `Established in 2005, Dreamland Developers is one of the most trusted names in the real estate industry in Pune and Nagpur. With over 15 years of experience, the company has successfully delivered more than 25 residential and commercial projects across Maharashtra.
-
-Dreamland Developers is known for their commitment to quality, innovation in design, and timely delivery of projects. Their construction practices adhere to the highest standards of quality and safety, ensuring that every property they build stands the test of time.
-
-The company has received multiple awards for architectural excellence and customer satisfaction. Their vision is to create living spaces that enhance the quality of life while maintaining environmental sustainability.`,
+          reraInfo: propertyData.rera_info || 'RERA information not available',
+          builderName: 'Information not available',
+          builderDescription: propertyData.about || 'Builder information not available',
           videoTour: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
           floorPlans: [
             {
-              title: '3 BHK - Type A (1000 sq.ft.)',
-              image: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&auto=format&fit=crop&q=80'
-            },
-            {
-              title: '3 BHK - Type B (1100 sq.ft.)',
-              image: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3c7?w=800&auto=format&fit=crop&q=80'
+              title: propertyData.bedrooms ? `${propertyData.bedrooms} BHK - (${propertyData.carpet_area || 'Area not specified'})` : 'Floor Plan',
+              image: propertyData.property_img_url_1 || 'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&auto=format&fit=crop&q=80'
             }
           ]
         };
         
-        setProperty(mockProperty);
-      } catch (err) {
-        setError('Failed to load property details. Please try again later.');
+        setProperty(formattedProperty);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load property details. Please try again later.');
         console.error('Error fetching property:', err);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     fetchProperty();
   }, [id]);
+  
+  // Helper function to calculate price per sq ft
+  const calculatePricePerSqFt = (price?: string, area?: string): string => {
+    if (!price || !area) return 'Not available';
+    
+    // Extract numeric value from price (assuming price format like "₹78.5 Lacs")
+    const priceMatch = price.match(/[0-9.]+/);
+    if (!priceMatch) return 'Not available';
+    
+    const priceValue = parseFloat(priceMatch[0]);
+    
+    // Extract numeric value from area (assuming area format like "1000 sq.ft.")
+    const areaMatch = area.match(/[0-9.]+/);
+    if (!areaMatch) return 'Not available';
+    
+    const areaValue = parseFloat(areaMatch[0]);
+    
+    if (isNaN(priceValue) || isNaN(areaValue) || areaValue === 0) {
+      return 'Not available';
+    }
+    
+    // Calculate price per sq ft
+    const pricePerSqFt = Math.round(priceValue * 100000 / areaValue);
+    return `₹${pricePerSqFt}`;
+  };
   
   // Scroll to top on page load
   useEffect(() => {
