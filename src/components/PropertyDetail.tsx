@@ -138,7 +138,7 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                 
                 <div className="mt-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-3xl font-bold text-gray-800">{price}</span>
+                    <span className="text-3xl font-bold text-gray-800">₹{price} Lacs</span>
                     <span className="text-gray-600 text-sm">{pricePerSqFt} per sq.ft.</span>
                   </div>
                   
@@ -152,8 +152,8 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                       <span className="text-gray-600 text-sm">Bathrooms</span>
                     </div>
                     <div className="text-center">
-                      <span className="block text-xl font-semibold text-gray-800">{area}</span>
-                      <span className="text-gray-600 text-sm">Area</span>
+                      <span className="block text-xl font-semibold text-gray-800">{area} sq.ft.</span>
+                      <span className="text-gray-600 text-sm">Carpet Area</span>
                     </div>
                   </div>
                 </div>
