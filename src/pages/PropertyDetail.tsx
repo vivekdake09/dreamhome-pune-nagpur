@@ -89,24 +89,50 @@ const PropertyDetailPage: React.FC = () => {
   const calculatePricePerSqFt = (price?: string, area?: string): string => {
     if (!price || !area) return 'Not available';
     
-    // Extract numeric value from price (assuming price format like "₹78.5 Lacs")
-    const priceMatch = price.match(/[0-9.]+/);
-    if (!priceMatch) return 'Not available';
+    // Safely extract numeric value from price string
+    let priceValue: number | null = null;
     
-    const priceValue = parseFloat(priceMatch[0]);
-    
-    // Extract numeric value from area (assuming area format like "1000 sq.ft.")
-    const areaMatch = area.match(/[0-9.]+/);
-    if (!areaMatch) return 'Not available';
-    
-    const areaValue = parseFloat(areaMatch[0]);
-    
-    if (isNaN(priceValue) || isNaN(areaValue) || areaValue === 0) {
-      return 'Not available';
+    if (typeof price === 'string') {
+      // Try to extract number from price string (e.g., "₹78.5 Lacs", "$100,000")
+      const priceMatches = price.match(/[0-9.,]+/g);
+      if (priceMatches && priceMatches.length > 0) {
+        // Remove commas and convert to float
+        priceValue = parseFloat(priceMatches[0].replace(/,/g, ''));
+      }
+    } else if (typeof price === 'number') {
+      priceValue = price;
     }
     
-    // Calculate price per sq ft
-    const pricePerSqFt = Math.round(priceValue * 100000 / areaValue);
+    if (priceValue === null) return 'Not available';
+    
+    // Extract numeric value from area
+    let areaValue: number | null = null;
+    
+    if (typeof area === 'string') {
+      const areaMatches = area.match(/[0-9.,]+/g);
+      if (areaMatches && areaMatches.length > 0) {
+        areaValue = parseFloat(areaMatches[0].replace(/,/g, ''));
+      }
+    } else if (typeof area === 'number') {
+      areaValue = area;
+    }
+    
+    if (areaValue === null || areaValue === 0) return 'Not available';
+    
+    // Calculate price per sq ft (assuming price is in INR lakhs by default)
+    // Adjust multiplier based on the currency or format
+    let multiplier = 100000; // Default for INR lakhs
+    
+    // Check if price string contains indicators of different formats
+    if (typeof price === 'string') {
+      if (price.toLowerCase().includes('cr')) {
+        multiplier = 10000000; // For crores
+      } else if (price.includes('$') || price.toLowerCase().includes('usd')) {
+        multiplier = 1; // For USD
+      }
+    }
+    
+    const pricePerSqFt = Math.round(priceValue * multiplier / areaValue);
     return `₹${pricePerSqFt}`;
   };
   
