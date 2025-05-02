@@ -98,7 +98,7 @@ const BuilderAdCarousel = () => {
       <div className="container mx-auto px-4">
         <Carousel
           opts={{
-            align: "start",
+            align: "center",
             loop: true,
           }}
           className="w-full relative"
@@ -106,9 +106,9 @@ const BuilderAdCarousel = () => {
         >
           <CarouselContent>
             {builderAds.map((ad) => (
-              <CarouselItem key={ad.id} className="md:basis-3/4 lg:basis-3/5">
-                <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div className="relative h-64 md:h-80">
+              <CarouselItem key={ad.id} className="basis-full">
+                <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 mx-auto max-w-4xl">
+                  <div className="relative h-64 md:h-96">
                     <img 
                       src={ad.image} 
                       alt={ad.name}
