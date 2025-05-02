@@ -107,7 +107,7 @@ const BuilderAdCarousel = () => {
           <CarouselContent>
             {builderAds.map((ad) => (
               <CarouselItem key={ad.id} className="basis-full">
-                <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 mx-auto max-w-4xl">
+                <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 mx-auto max-w-8xl">
                   <div className="relative h-64 md:h-96">
                     <img 
                       src={ad.image} 

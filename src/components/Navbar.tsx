@@ -71,8 +71,8 @@ const Navbar: React.FC = () => {
             
             <a href="#" className="text-gray-700 hover:text-realestate-600">Home</a>
             <a href="#" className="text-gray-700 hover:text-realestate-600">Properties</a>
-            <a href="#" className="text-gray-700 hover:text-realestate-600">Services</a>
             <a href="#" className="text-gray-700 hover:text-realestate-600">About Us</a>
+            <a href="#" className="text-gray-700 hover:text-realestate-600">Blog</a>
             <a href="#" className="text-gray-700 hover:text-realestate-600">Contact</a>
             
             <div className="flex items-center space-x-4">
@@ -119,10 +119,10 @@ const Navbar: React.FC = () => {
                   Login
                 </Button>
               )}
-              <a href="tel:+919876543210" className="bg-realestate-600 hover:bg-realestate-700 text-white px-4 py-2 rounded-md transition duration-300 flex items-center">
+              {/* <a href="tel:+919876543210" className="bg-realestate-600 hover:bg-realestate-700 text-white px-4 py-2 rounded-md transition duration-300 flex items-center">
                 <Phone className="w-4 h-4 mr-2" />
                 <span>Contact Us</span>
-              </a>
+              </a> */}
             </div>
           </div>
 
