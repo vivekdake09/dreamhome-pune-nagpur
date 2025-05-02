@@ -103,7 +103,7 @@ const LocationSearch = () => {
             )}
           </form>
           
-          <div className="flex flex-wrap justify-center gap-2 mt-4">
+          {/* <div className="flex flex-wrap justify-center gap-2 mt-4">
             <span className="text-sm text-gray-500">Popular locations:</span>
             {['Pune', 'Nagpur', 'Baner', 'Kharadi', 'Hinjewadi'].map((loc) => (
               <Button 
@@ -116,7 +116,7 @@ const LocationSearch = () => {
                 {loc}
               </Button>
             ))}
-          </div>
+          </div> */}
           
           {/* Construction Status Filter Buttons */}
           <div className="mt-6">
