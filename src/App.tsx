@@ -11,6 +11,11 @@ import PropertyDetailPage from "./pages/PropertyDetail";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AdminLogin from "./pages/AdminLogin";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/Dashboard";
+import PropertiesList from "./pages/admin/PropertiesList";
+import AddProperty from "./pages/admin/AddProperty";
 
 const queryClient = new QueryClient();
 
@@ -22,13 +27,24 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/my-properties" element={<div>My Properties Coming Soon</div>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="properties" element={<PropertiesList />} />
+              <Route path="properties/add" element={<AddProperty />} />
+              <Route path="properties/edit/:id" element={<div>Edit Property (Coming Soon)</div>} />
+            </Route>
+
+            {/* Catch-all Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
