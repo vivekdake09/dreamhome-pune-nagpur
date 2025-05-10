@@ -7,13 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, LogIn } from "lucide-react";
-
-// These would normally come from environment variables or a more secure source
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "admin123"; // This is just for demo, use a secure password in production
+import { supabase } from '@/lib/supabaseClient';
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,18 +20,44 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      // Simple auth check - in a real app, use proper authentication
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        // Set admin session in localStorage
+      // Using Supabase authentication
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Check if user has admin role (you would need to set up this role in Supabase)
+      const { data: userData, error: userError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single();
+      
+      if (userError) {
+        console.error("Error checking user role:", userError);
+        await supabase.auth.signOut();
+        toast.error("Not authorized as admin");
+        setIsLoading(false);
+        return;
+      }
+
+      if (userData?.role === 'admin') {
+        // Set admin session in localStorage for UI purposes
         localStorage.setItem('isAdminLoggedIn', 'true');
-        toast.success("Login successful");
+        toast.success("Admin login successful");
         navigate('/admin/dashboard');
       } else {
-        toast.error("Invalid username or password");
+        // Not an admin, sign them out
+        await supabase.auth.signOut();
+        toast.error("Not authorized as admin");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      toast.error("Login failed");
+      toast.error(error.message || "Login failed");
     } finally {
       setIsLoading(false);
     }
@@ -57,13 +80,13 @@ const AdminLogin = () => {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input 
-                id="username" 
-                type="text" 
-                placeholder="Enter your username" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)}
+                id="email" 
+                type="email" 
+                placeholder="admin@example.com" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -92,7 +115,7 @@ const AdminLogin = () => {
         </CardContent>
         <CardFooter className="flex justify-center border-t p-4">
           <p className="text-sm text-muted-foreground">
-            Access restricted to authorized personnel only
+            Access restricted to authorized administrators only
           </p>
         </CardFooter>
       </Card>

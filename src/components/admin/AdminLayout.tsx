@@ -1,8 +1,10 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { Building, LogOut, Plus, Key, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { supabase } from '@/lib/supabaseClient';
+import { toast } from 'sonner';
 import {
   SidebarProvider,
   Sidebar,
@@ -17,19 +19,66 @@ import {
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [adminVerified, setAdminVerified] = useState(false);
 
-  // Check if admin is logged in
+  // Check if admin is logged in with Supabase
   useEffect(() => {
-    const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
-    if (!isAdminLoggedIn) {
-      navigate('/admin/login');
+    async function verifyAdmin() {
+      try {
+        // Get current session
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError || !sessionData.session) {
+          throw new Error('Not authenticated');
+        }
+
+        // Check if the user has admin role
+        const { data: userData, error: userError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', sessionData.session.user.id)
+          .single();
+        
+        if (userError || userData?.role !== 'admin') {
+          throw new Error('Not authorized as admin');
+        }
+
+        // Admin verified
+        setAdminVerified(true);
+      } catch (error) {
+        console.error('Admin verification error:', error);
+        // Redirect to login
+        navigate('/admin/login');
+        // Clear any stale admin login flags
+        localStorage.removeItem('isAdminLoggedIn');
+      } finally {
+        setIsLoading(false);
+      }
     }
+
+    verifyAdmin();
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdminLoggedIn');
-    navigate('/admin/login');
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      localStorage.removeItem('isAdminLoggedIn');
+      toast.success("Logged out successfully");
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to log out');
+    }
   };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading admin panel...</div>;
+  }
+
+  if (!adminVerified) {
+    return null; // Will redirect via the useEffect
+  }
 
   return (
     <SidebarProvider>

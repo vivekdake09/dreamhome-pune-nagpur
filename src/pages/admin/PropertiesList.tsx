@@ -1,11 +1,13 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchAllProperties } from '@/services/propertyService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '@/lib/supabaseClient';
 import {
   Table,
   TableBody,
@@ -14,15 +16,51 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const PropertiesList = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [propertyToDelete, setPropertyToDelete] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: properties = [], isLoading, error } = useQuery({
     queryKey: ['properties'],
     queryFn: fetchAllProperties
+  });
+
+  // Delete property mutation
+  const deletePropertyMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return id;
+    },
+    onSuccess: () => {
+      // Invalidate and refetch properties after deletion
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      toast.success('Property deleted successfully');
+      setPropertyToDelete(null);
+    },
+    onError: (error: any) => {
+      console.error('Error deleting property:', error);
+      toast.error(`Failed to delete property: ${error.message}`);
+      setPropertyToDelete(null);
+    }
   });
 
   // Filter properties based on search term
@@ -31,6 +69,16 @@ const PropertiesList = () => {
     (property.location && property.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (property.type && property.type.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const handleDeleteProperty = (id: string) => {
+    setPropertyToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (propertyToDelete) {
+      deletePropertyMutation.mutate(propertyToDelete);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -99,6 +147,7 @@ const PropertiesList = () => {
                               variant="ghost" 
                               size="icon"
                               className="text-destructive hover:text-destructive"
+                              onClick={() => handleDeleteProperty(property.id)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -113,6 +162,32 @@ const PropertiesList = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!propertyToDelete} onOpenChange={() => setPropertyToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive" />
+                Confirm Deletion
+              </div>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this property? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
