@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from '@/lib/supabaseClient';
+import { uploadToCloudinary } from '@/utils/cloudinaryService';
+import { Loader2, Upload } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -31,9 +33,9 @@ const formSchema = z.object({
   bedrooms: z.coerce.number().nonnegative("Bedrooms must be a positive number"),
   bathrooms: z.coerce.number().nonnegative("Bathrooms must be a positive number"),
   carpet_area: z.string().min(1, "Carpet area is required"),
-  property_img_url_1: z.string().min(1, "At least one image URL is required"),
-  property_img_url_2: z.string().optional(),
-  property_vid_url: z.string().optional(),
+  property_img_url_1: z.string().optional().default(""),
+  property_img_url_2: z.string().optional().default(""),
+  property_vid_url: z.string().optional().default(""),
   rera_info: z.string().optional(),
   features_amenities: z.string().optional(),
   project_highlights: z.string().optional(),
@@ -44,6 +46,16 @@ type FormValues = z.infer<typeof formSchema>;
 
 const AddProperty = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploading, setUploading] = useState<{
+    image1: boolean;
+    image2: boolean;
+    video: boolean;
+  }>({
+    image1: false,
+    image2: false,
+    video: false,
+  });
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -67,8 +79,40 @@ const AddProperty = () => {
     },
   });
 
+  const handleFileUpload = async (file: File, type: 'image1' | 'image2' | 'video') => {
+    try {
+      setUploading(prev => ({
+        ...prev,
+        [type]: true
+      }));
+      
+      const resourceType = type === 'video' ? 'video' : 'image';
+      const result = await uploadToCloudinary(file, resourceType);
+      
+      // Update form with the returned URL
+      if (type === 'image1') {
+        form.setValue('property_img_url_1', result.secure_url);
+      } else if (type === 'image2') {
+        form.setValue('property_img_url_2', result.secure_url);
+      } else if (type === 'video') {
+        form.setValue('property_vid_url', result.secure_url);
+      }
+      
+      toast.success(`${type === 'video' ? 'Video' : 'Image'} uploaded successfully`);
+    } catch (error) {
+      console.error(`Error uploading ${type}:`, error);
+      toast.error(`Failed to upload ${type === 'video' ? 'video' : 'image'}`);
+    } finally {
+      setUploading(prev => ({
+        ...prev,
+        [type]: false
+      }));
+    }
+  };
+
   const onSubmit = async (data: FormValues) => {
     try {
+      setIsSubmitting(true);
       // Convert string arrays to arrays if they're submitted as comma-separated strings
       const processedData = {
         ...data,
@@ -88,6 +132,8 @@ const AddProperty = () => {
     } catch (error) {
       console.error('Error adding property:', error);
       toast.error('Failed to add property');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -245,12 +291,42 @@ const AddProperty = () => {
                   name="property_img_url_1"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Image URL 1*</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image1.jpg" {...field} />
-                      </FormControl>
+                      <FormLabel>Main Image*</FormLabel>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                handleFileUpload(e.target.files[0], 'image1');
+                              }
+                            }}
+                            className="flex-1"
+                          />
+                          {uploading.image1 && (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          )}
+                        </div>
+                        <FormControl>
+                          <Input 
+                            placeholder="Image URL (uploads automatically)" 
+                            {...field} 
+                            readOnly 
+                          />
+                        </FormControl>
+                        {field.value && (
+                          <div className="mt-2 border rounded overflow-hidden w-full max-h-40">
+                            <img 
+                              src={field.value} 
+                              alt="Property preview" 
+                              className="w-full h-auto object-cover"
+                            />
+                          </div>
+                        )}
+                      </div>
                       <FormDescription>
-                        Main image URL for the property
+                        Main image for the property (upload through Cloudinary)
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -262,10 +338,40 @@ const AddProperty = () => {
                   name="property_img_url_2"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Image URL 2</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/image2.jpg" {...field} />
-                      </FormControl>
+                      <FormLabel>Secondary Image</FormLabel>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                handleFileUpload(e.target.files[0], 'image2');
+                              }
+                            }}
+                            className="flex-1"
+                          />
+                          {uploading.image2 && (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          )}
+                        </div>
+                        <FormControl>
+                          <Input 
+                            placeholder="Image URL (uploads automatically)" 
+                            {...field} 
+                            readOnly 
+                          />
+                        </FormControl>
+                        {field.value && (
+                          <div className="mt-2 border rounded overflow-hidden w-full max-h-40">
+                            <img 
+                              src={field.value} 
+                              alt="Property preview" 
+                              className="w-full h-auto object-cover"
+                            />
+                          </div>
+                        )}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -276,10 +382,31 @@ const AddProperty = () => {
                   name="property_vid_url"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Video URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://youtube.com/watch?v=..." {...field} />
-                      </FormControl>
+                      <FormLabel>Property Video</FormLabel>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                handleFileUpload(e.target.files[0], 'video');
+                              }
+                            }}
+                            className="flex-1"
+                          />
+                          {uploading.video && (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          )}
+                        </div>
+                        <FormControl>
+                          <Input 
+                            placeholder="Video URL (uploads automatically)" 
+                            {...field} 
+                            readOnly 
+                          />
+                        </FormControl>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -370,7 +497,15 @@ const AddProperty = () => {
                 >
                   Cancel
                 </Button>
-                <Button type="submit">Save Property</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                    </>
+                  ) : (
+                    'Save Property'
+                  )}
+                </Button>
               </div>
             </form>
           </Form>
