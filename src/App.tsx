@@ -16,6 +16,8 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import PropertiesList from "./pages/admin/PropertiesList";
 import AddProperty from "./pages/admin/AddProperty";
+import EditProperty from "./pages/admin/EditProperty";
+import UsersManagement from "./pages/admin/UsersManagement";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +43,8 @@ const App = () => (
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="properties" element={<PropertiesList />} />
               <Route path="properties/add" element={<AddProperty />} />
-              <Route path="properties/edit/:id" element={<div>Edit Property (Coming Soon)</div>} />
+              <Route path="properties/edit/:id" element={<EditProperty />} />
+              <Route path="users" element={<UsersManagement />} />
             </Route>
 
             {/* Catch-all Route */}

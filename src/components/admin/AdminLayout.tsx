@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
-import { Building, LogOut, Plus, Key, User } from 'lucide-react';
+import { Building, LogOut, Plus, Key, User, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'sonner';
@@ -110,6 +110,12 @@ const AdminLayout = () => {
                 <SidebarMenuButton onClick={() => navigate('/admin/properties/add')} tooltip="Add Property">
                   <Plus />
                   <span>Add Property</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => navigate('/admin/users')} tooltip="Users">
+                  <Users />
+                  <span>Users</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
