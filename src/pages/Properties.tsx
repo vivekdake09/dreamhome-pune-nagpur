@@ -11,82 +11,80 @@ import { Search, Home, SlidersHorizontal, X } from 'lucide-react';
 // Sample properties data (this would typically come from an API)
 const properties: PropertyCardProps[] = [
   {
-    id: 1,
+    id: "1",
     title: "Modern Apartment with Sea View",
     location: "Bandra, Mumbai",
-    price: 1.25,
-    beds: 3,
-    baths: 2,
-    area: 1200,
+    price: "1.25 Cr",
+    bedrooms: 3,
+    bathrooms: 2,
+    area: "1200 sq.ft.",
     type: "Apartment",
     image: "/placeholder.svg",
     isFeatured: true,
-    isVerified: true
+    isNew: true
   },
   {
-    id: 2,
+    id: "2",
     title: "Luxury Villa with Private Pool",
     location: "Koregaon Park, Pune",
-    price: 2.5,
-    beds: 4,
-    baths: 3,
-    area: 3500,
+    price: "2.5 Cr",
+    bedrooms: 4,
+    bathrooms: 3,
+    area: "3500 sq.ft.",
     type: "Villa",
     image: "/placeholder.svg",
     isFeatured: true,
-    isVerified: true
+    tags: ["Swimming Pool", "Garden"]
   },
   {
-    id: 3,
+    id: "3",
     title: "Cozy Studio in City Center",
     location: "MG Road, Bangalore",
-    price: 0.75,
-    beds: 1,
-    baths: 1,
-    area: 600,
+    price: "0.75 Cr",
+    bedrooms: 1,
+    bathrooms: 1,
+    area: "600 sq.ft.",
     type: "Studio",
     image: "/placeholder.svg",
-    isFeatured: true,
-    isVerified: false
+    isNew: true,
+    possession: "Ready to Move"
   },
   {
-    id: 4,
+    id: "4",
     title: "Family Home with Garden",
     location: "Viman Nagar, Pune",
-    price: 1.8,
-    beds: 3,
-    baths: 2,
-    area: 2200,
+    price: "1.8 Cr",
+    bedrooms: 3,
+    bathrooms: 2,
+    area: "2200 sq.ft.",
     type: "House",
     image: "/placeholder.svg",
-    isFeatured: false,
-    isVerified: true
+    tags: ["Garden", "Parking"]
   },
   {
-    id: 5,
+    id: "5",
     title: "Penthouse with Terrace",
     location: "South Delhi, Delhi",
-    price: 3.2,
-    beds: 3,
-    baths: 3,
-    area: 2400,
+    price: "3.2 Cr",
+    bedrooms: 3,
+    bathrooms: 3,
+    area: "2400 sq.ft.",
     type: "Penthouse",
     image: "/placeholder.svg",
     isFeatured: true,
-    isVerified: true
+    tags: ["Terrace", "City View"]
   },
   {
-    id: 6,
+    id: "6",
     title: "Commercial Office Space",
     location: "Hitec City, Hyderabad",
-    price: 4.5,
-    beds: 0,
-    baths: 2,
-    area: 4000,
+    price: "4.5 Cr",
+    bedrooms: 0,
+    bathrooms: 2,
+    area: "4000 sq.ft.",
     type: "Commercial",
     image: "/placeholder.svg",
-    isFeatured: false,
-    isVerified: true
+    possession: "Q4 2025"
   }
 ];
 
