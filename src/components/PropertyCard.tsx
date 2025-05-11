@@ -40,9 +40,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="relative">
           {/* Property Image */}
           <img
-            src={image}
+            src={image || '/placeholder.svg'}
             alt={title}
             className="w-full h-48 object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/placeholder.svg';
+            }}
           />
           
           {/* Tags on Image */}

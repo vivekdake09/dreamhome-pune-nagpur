@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,7 @@ import { CalendarIcon, Clock, BookOpen } from "lucide-react";
 
 const blogPosts = [
   {
-    id: 1,
+    id: "1",
     title: "How to Find Your Dream Home in a Competitive Market",
     excerpt: "Discover key strategies to secure your perfect property even when inventory is low and competition is high.",
     author: "Priya Sharma",
@@ -21,7 +22,7 @@ const blogPosts = [
     image: "/placeholder.svg"
   },
   {
-    id: 2,
+    id: "2",
     title: "5 Home Renovation Projects That Actually Add Value",
     excerpt: "Not all renovations are created equal. Learn which upgrades give you the best return on investment.",
     author: "Rahul Mehta",
@@ -33,7 +34,7 @@ const blogPosts = [
     image: "/placeholder.svg"
   },
   {
-    id: 3,
+    id: "3",
     title: "Understanding Property Taxes in Different Cities",
     excerpt: "A comprehensive guide to how property taxes work and what to expect when buying in various locations.",
     author: "Ananya Patel",
@@ -45,7 +46,7 @@ const blogPosts = [
     image: "/placeholder.svg"
   },
   {
-    id: 4,
+    id: "4",
     title: "The Future of Real Estate: Smart Homes and AI",
     excerpt: "Explore how technology is transforming residential properties and what buyers should look for.",
     author: "Vikram Desai",
@@ -110,10 +111,12 @@ const Blog: React.FC = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full" size="sm">
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  Read Article
-                </Button>
+                <Link to={`/blog/${post.id}`} className="w-full">
+                  <Button variant="outline" className="w-full" size="sm">
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Read Article
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))}

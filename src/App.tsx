@@ -20,6 +20,7 @@ import AddProperty from "./pages/admin/AddProperty";
 import EditProperty from "./pages/admin/EditProperty";
 import UsersManagement from "./pages/admin/UsersManagement";
 import Blog from "./pages/Blog";
+import BlogPost from "./components/BlogPost";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import Properties from "./pages/Properties";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/properties" element={<Properties />} />
