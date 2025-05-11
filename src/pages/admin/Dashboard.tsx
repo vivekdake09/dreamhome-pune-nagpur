@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building, Plus, User } from 'lucide-react';
+import { Building, Users, User } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
 const AdminDashboard = () => {
   const [propertiesCount, setPropertiesCount] = useState<number>(0);
+  const [usersCount, setUsersCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,13 +15,19 @@ const AdminDashboard = () => {
       try {
         setIsLoading(true);
         // Count total properties
-        const { count, error } = await supabase
+        const { count: propertiesCount, error: propertiesError } = await supabase
           .from('properties')
           .select('*', { count: 'exact', head: true });
         
-        if (error) throw error;
+        if (propertiesError) throw propertiesError;
         
-        setPropertiesCount(count || 0);
+        // Get user count from auth.users
+        const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
+        
+        if (userError) throw userError;
+        
+        setPropertiesCount(propertiesCount || 0);
+        setUsersCount(userData?.users?.length || 0);
       } catch (err: any) {
         console.error('Error fetching dashboard data:', err);
         setError(err.message);
@@ -35,7 +42,7 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">BMDH Dashboard</h1>
         <p className="text-muted-foreground">
           Welcome to your property management dashboard.
         </p>
@@ -51,7 +58,7 @@ const AdminDashboard = () => {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
+          <Card className="border border-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">
                 Total Properties
@@ -65,20 +72,21 @@ const AdminDashboard = () => {
               </p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border border-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">
-                Quick Actions
+                Total Users
               </CardTitle>
-              <Plus className="h-4 w-4 text-muted-foreground" />
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground mt-2">
-                Use the sidebar to navigate and manage properties
+              <div className="text-2xl font-bold">{usersCount}</div>
+              <p className="text-xs text-muted-foreground">
+                Registered users
               </p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border border-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium">
                 Database Status

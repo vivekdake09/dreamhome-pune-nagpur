@@ -1,10 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
-import { Building, LogOut, Plus, Key, User, Users } from 'lucide-react';
+import { Building, LogOut, Plus, Key, User, Users, Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'sonner';
+import { useTheme } from '@/components/ThemeProvider';
 import {
   SidebarProvider,
   Sidebar,
@@ -19,8 +20,10 @@ import {
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [adminVerified, setAdminVerified] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Check if admin is logged in with Supabase
   useEffect(() => {
@@ -72,6 +75,14 @@ const AdminLayout = () => {
     }
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading admin panel...</div>;
   }
@@ -82,12 +93,12 @@ const AdminLayout = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-slate-100">
+      <div className="flex min-h-screen w-full bg-slate-50 dark:bg-gray-900">
         <Sidebar>
           <SidebarHeader className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center space-x-2">
               <Key className="h-6 w-6" />
-              <span className="font-bold text-lg">Admin Panel</span>
+              <span className="font-bold text-lg">BMDH Dashboard</span>
             </div>
             <SidebarTrigger />
           </SidebarHeader>
@@ -122,7 +133,24 @@ const AdminLayout = () => {
           </SidebarContent>
           
           <SidebarFooter>
-            <div className="p-4">
+            <div className="p-4 space-y-2">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start" 
+                onClick={toggleTheme}
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="mr-2 h-4 w-4" />
+                    Light Mode
+                  </>
+                ) : (
+                  <>
+                    <Moon className="mr-2 h-4 w-4" />
+                    Dark Mode
+                  </>
+                )}
+              </Button>
               <Button 
                 variant="outline" 
                 className="w-full justify-start" 
@@ -135,8 +163,13 @@ const AdminLayout = () => {
           </SidebarFooter>
         </Sidebar>
         
-        <main className="flex-1 p-6">
-          <Outlet />
+        <main className="flex-1 flex flex-col">
+          <div className="flex-1 p-6">
+            <Outlet />
+          </div>
+          <footer className="py-4 px-6 border-t text-center text-sm text-gray-500 dark:text-gray-400 mt-auto">
+            © 2025 by BookMyDreamHome Pvt Ltd. All rights reserved.
+          </footer>
         </main>
       </div>
     </SidebarProvider>

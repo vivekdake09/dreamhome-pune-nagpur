@@ -90,23 +90,33 @@ const UsersManagement = () => {
 
   // Fetch users from Supabase Auth
   const fetchUsers = async () => {
-    // We need to fetch all users from Supabase Auth
-    const { data: { users }, error } = await supabase.auth.admin.listUsers();
-    if (error) throw error;
-    
-    // Fetch user roles from our custom table
-    const { data: roles } = await supabase.from('user_roles').select('user_id, role');
-    
-    // Merge the role information with users
-    const usersWithRoles = users?.map(user => {
-      const userRole = roles?.find(role => role.user_id === user.id);
-      return {
-        ...user,
-        role: userRole?.role || 'user'
-      };
-    });
-    
-    return usersWithRoles || [];
+    try {
+      // Get service role key from environment variable or use anon key
+      const { data, error } = await supabase.auth.admin.listUsers();
+      
+      if (error) throw error;
+      
+      // Fetch user roles from our custom table
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+      
+      if (rolesError) console.error('Error fetching roles:', rolesError);
+      
+      // Merge the role information with users
+      const usersWithRoles = data?.users?.map(user => {
+        const userRole = roles?.find(role => role.user_id === user.id);
+        return {
+          ...user,
+          role: userRole?.role || 'user'
+        };
+      });
+      
+      return usersWithRoles || [];
+    } catch (err) {
+      console.error('Error in fetchUsers:', err);
+      throw err;
+    }
   };
 
   // Query for users
@@ -221,7 +231,7 @@ const UsersManagement = () => {
   // Filter users based on search term
   const filteredUsers = users.filter(user => 
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.user_metadata?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    user.user_metadata?.full_name?.toLowerCase().includes(searchTerm.toLowerCase() || '')
   );
 
   return (
@@ -246,7 +256,9 @@ const UsersManagement = () => {
           {isLoading ? (
             <div className="text-center py-4">Loading users...</div>
           ) : error ? (
-            <div className="text-center text-red-500 py-4">Error loading users</div>
+            <div className="text-center text-red-500 py-4">
+              Error loading users: {(error as Error).message}
+            </div>
           ) : (
             <div className="rounded-md border">
               <Table>
@@ -278,7 +290,7 @@ const UsersManagement = () => {
                         <TableCell>{user.user_metadata?.full_name || 'N/A'}</TableCell>
                         <TableCell>
                           <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+                            user.role === 'admin' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
                           }`}>
                             {user.role || 'user'}
                           </div>
