@@ -46,6 +46,9 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme);
+    
+    // This forces a re-render of components that depend on CSS variables
+    document.body.style.colorScheme = theme;
   }, [theme]);
 
   const value = {

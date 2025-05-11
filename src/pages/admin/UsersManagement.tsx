@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -88,31 +87,42 @@ const UsersManagement = () => {
     }
   });
 
-  // Fetch users from Supabase Auth
+  // Fetch users from Supabase
   const fetchUsers = async () => {
     try {
-      // Get service role key from environment variable or use anon key
-      const { data, error } = await supabase.auth.admin.listUsers();
-      
-      if (error) throw error;
-      
-      // Fetch user roles from our custom table
-      const { data: roles, error: rolesError } = await supabase
+      // First get users from user_roles table
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
-        .select('user_id, role');
+        .select('*');
       
-      if (rolesError) console.error('Error fetching roles:', rolesError);
+      if (roleError) throw roleError;
       
-      // Merge the role information with users
-      const usersWithRoles = data?.users?.map(user => {
-        const userRole = roles?.find(role => role.user_id === user.id);
-        return {
-          ...user,
-          role: userRole?.role || 'user'
-        };
-      });
+      // Get auth user data - we'll use auth.getUser for each user
+      const usersWithRoles = [];
       
-      return usersWithRoles || [];
+      for (const roleEntry of roleData || []) {
+        try {
+          const { data: userData, error: userError } = await supabase.auth.admin.getUserById(
+            roleEntry.user_id
+          );
+          
+          if (userError) {
+            console.error('Error fetching user:', userError);
+            continue;
+          }
+          
+          if (userData && userData.user) {
+            usersWithRoles.push({
+              ...userData.user,
+              role: roleEntry.role || 'user'
+            });
+          }
+        } catch (err) {
+          console.error('Error processing user:', err);
+        }
+      }
+      
+      return usersWithRoles;
     } catch (err) {
       console.error('Error in fetchUsers:', err);
       throw err;
@@ -122,7 +132,9 @@ const UsersManagement = () => {
   // Query for users
   const { data: users = [], isLoading, error } = useQuery({
     queryKey: ['users'],
-    queryFn: fetchUsers
+    queryFn: fetchUsers,
+    retry: 1,
+    retryDelay: 1000
   });
 
   // Delete user mutation

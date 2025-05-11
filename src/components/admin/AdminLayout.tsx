@@ -23,7 +23,6 @@ const AdminLayout = () => {
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [adminVerified, setAdminVerified] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Check if admin is logged in with Supabase
   useEffect(() => {
@@ -79,10 +78,6 @@ const AdminLayout = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
-
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading admin panel...</div>;
   }
@@ -136,7 +131,7 @@ const AdminLayout = () => {
             <div className="p-4 space-y-2">
               <Button 
                 variant="outline" 
-                className="w-full justify-start" 
+                className="w-full justify-start text-foreground" 
                 onClick={toggleTheme}
               >
                 {theme === 'dark' ? (
@@ -153,7 +148,7 @@ const AdminLayout = () => {
               </Button>
               <Button 
                 variant="outline" 
-                className="w-full justify-start" 
+                className="w-full justify-start text-foreground" 
                 onClick={handleLogout}
               >
                 <LogOut className="mr-2 h-4 w-4" />

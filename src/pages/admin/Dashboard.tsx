@@ -21,13 +21,16 @@ const AdminDashboard = () => {
         
         if (propertiesError) throw propertiesError;
         
-        // Get user count from auth.users
-        const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
+        // Get user count using a different approach without admin privileges
+        // Instead of using auth.admin.listUsers which requires admin privileges
+        const { count: userCount, error: userCountError } = await supabase
+          .from('user_roles')
+          .select('*', { count: 'exact', head: true });
         
-        if (userError) throw userError;
+        if (userCountError) throw userCountError;
         
         setPropertiesCount(propertiesCount || 0);
-        setUsersCount(userData?.users?.length || 0);
+        setUsersCount(userCount || 0);
       } catch (err: any) {
         console.error('Error fetching dashboard data:', err);
         setError(err.message);
