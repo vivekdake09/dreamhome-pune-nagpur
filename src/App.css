@@ -17,6 +17,18 @@
   }
 }
 
+.light {
+  color-scheme: light;
+  --foreground: #000000;
+  --background: #ffffff;
+}
+
+.dark {
+  color-scheme: dark;
+  --foreground: #ffffff;
+  --background: #121212;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

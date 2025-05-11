@@ -1,7 +1,7 @@
+
 import React, { useState } from 'react';
 import { Menu, X, MapPin, User, Phone, LogIn } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -33,16 +33,24 @@ const Navbar: React.FC = () => {
     navigate('/');
   };
 
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Properties', path: '/properties' },
+    { name: 'About Us', path: '/about-us' },
+    { name: 'Blog', path: '/blog' },
+    { name: 'Contact', path: '/contact' }
+  ];
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto">
         <div className="flex justify-between items-center py-4 px-4 md:px-0">
-          <a href="/" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <span className="font-bold text-2xl text-realestate-700">
               BookMyDreamHome
               <span className="text-sm text-realestate-500">.in</span>
             </span>
-          </a>
+          </Link>
 
           <div className="hidden md:flex items-center space-x-8">
             <div className="relative">
@@ -69,11 +77,15 @@ const Navbar: React.FC = () => {
               )}
             </div>
             
-            <a href="#" className="text-gray-700 hover:text-realestate-600">Home</a>
-            <a href="#" className="text-gray-700 hover:text-realestate-600">Properties</a>
-            <a href="#" className="text-gray-700 hover:text-realestate-600">About Us</a>
-            <a href="#" className="text-gray-700 hover:text-realestate-600">Blog</a>
-            <a href="#" className="text-gray-700 hover:text-realestate-600">Contact</a>
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className="text-gray-700 hover:text-realestate-600"
+              >
+                {link.name}
+              </Link>
+            ))}
             
             <div className="flex items-center space-x-4">
               {user ? (
@@ -119,10 +131,6 @@ const Navbar: React.FC = () => {
                   Login
                 </Button>
               )}
-              {/* <a href="tel:+919876543210" className="bg-realestate-600 hover:bg-realestate-700 text-white px-4 py-2 rounded-md transition duration-300 flex items-center">
-                <Phone className="w-4 h-4 mr-2" />
-                <span>Contact Us</span>
-              </a> */}
             </div>
           </div>
 
@@ -159,11 +167,18 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
-            <a href="#" className="block py-2 text-gray-700">Home</a>
-            <a href="#" className="block py-2 text-gray-700">Properties</a>
-            <a href="#" className="block py-2 text-gray-700">Services</a>
-            <a href="#" className="block py-2 text-gray-700">About Us</a>
-            <a href="#" className="block py-2 text-gray-700">Contact</a>
+            
+            {navLinks.map((link) => (
+              <Link 
+                key={link.name} 
+                to={link.path} 
+                className="block py-2 text-gray-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+            
             <div className="pt-2">
               <a href="tel:+919876543210" className="bg-realestate-600 hover:bg-realestate-700 text-white px-4 py-2 rounded-md transition duration-300 inline-flex items-center">
                 <Phone className="w-4 h-4 mr-2" />

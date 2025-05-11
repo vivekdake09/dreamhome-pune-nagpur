@@ -19,6 +19,10 @@ import PropertiesList from "./pages/admin/PropertiesList";
 import AddProperty from "./pages/admin/AddProperty";
 import EditProperty from "./pages/admin/EditProperty";
 import UsersManagement from "./pages/admin/UsersManagement";
+import Blog from "./pages/Blog";
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
+import Properties from "./pages/Properties";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +42,10 @@ const App = () => (
               <Route path="/my-properties" element={<div>My Properties Coming Soon</div>} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/properties" element={<Properties />} />
               
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
