@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
-import { Building, LogOut, Plus, Key, User, Users, Moon, Sun, PanelLeft, PanelRight } from 'lucide-react';
+import { Building, LogOut, Plus, Key, User, Users, Moon, Sun } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from 'sonner';
 import { useTheme } from '@/components/ThemeProvider';
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   SidebarProvider,
   Sidebar,
@@ -14,7 +15,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   SidebarFooter,
 } from "@/components/ui/sidebar";
 
@@ -23,6 +23,7 @@ const AdminLayout = () => {
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [adminVerified, setAdminVerified] = useState(false);
+  const isMobile = useIsMobile();
 
   // Check if admin is logged in with Supabase
   useEffect(() => {
@@ -79,7 +80,7 @@ const AdminLayout = () => {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading admin panel...</div>;
+    return <div className="flex items-center justify-center min-h-screen text-foreground">Loading admin panel...</div>;
   }
 
   if (!adminVerified) {
@@ -89,39 +90,39 @@ const AdminLayout = () => {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-slate-50 dark:bg-gray-900">
-        <Sidebar>
+        <Sidebar variant={isMobile ? "floating" : "sidebar"} collapsible={isMobile ? "offcanvas" : "icon"}>
           <SidebarHeader className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center space-x-2">
-              <Key className="h-6 w-6" />
-              <span className="font-bold text-lg">BMDH Dashboard</span>
+              <Key className="h-6 w-6 text-foreground" />
+              <span className="font-bold text-lg text-foreground">BMDH Dashboard</span>
             </div>
-            <SidebarTrigger />
+            {/* SidebarTrigger removed as requested */}
           </SidebarHeader>
           
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => navigate('/admin/dashboard')} tooltip="Dashboard">
-                  <User />
-                  <span>Dashboard</span>
+                  <User className="text-foreground" />
+                  <span className="text-foreground">Dashboard</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => navigate('/admin/properties')} tooltip="Properties">
-                  <Building />
-                  <span>Properties</span>
+                  <Building className="text-foreground" />
+                  <span className="text-foreground">Properties</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => navigate('/admin/properties/add')} tooltip="Add Property">
-                  <Plus />
-                  <span>Add Property</span>
+                  <Plus className="text-foreground" />
+                  <span className="text-foreground">Add Property</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => navigate('/admin/users')} tooltip="Users">
-                  <Users />
-                  <span>Users</span>
+                  <Users className="text-foreground" />
+                  <span className="text-foreground">Users</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

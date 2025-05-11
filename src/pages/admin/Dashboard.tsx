@@ -24,7 +24,7 @@ const AdminDashboard = () => {
         // Get user count using a different approach without admin privileges
         // Instead of using auth.admin.listUsers which requires admin privileges
         const { count: userCount, error: userCountError } = await supabase
-          .from('user_roles')
+          .from('profiles')
           .select('*', { count: 'exact', head: true });
         
         if (userCountError) throw userCountError;
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">BMDH Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">BMDH Dashboard</h1>
         <p className="text-muted-foreground">
           Welcome to your property management dashboard.
         </p>
@@ -53,7 +53,7 @@ const AdminDashboard = () => {
 
       {isLoading ? (
         <div className="flex justify-center py-8">
-          <div className="text-center">Loading dashboard data...</div>
+          <div className="text-center text-foreground">Loading dashboard data...</div>
         </div>
       ) : error ? (
         <div className="flex justify-center py-8">
@@ -63,13 +63,13 @@ const AdminDashboard = () => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card className="border border-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Total Properties
               </CardTitle>
               <Building className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{propertiesCount}</div>
+              <div className="text-2xl font-bold text-foreground">{propertiesCount}</div>
               <p className="text-xs text-muted-foreground">
                 Properties in database
               </p>
@@ -77,13 +77,13 @@ const AdminDashboard = () => {
           </Card>
           <Card className="border border-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Total Users
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{usersCount}</div>
+              <div className="text-2xl font-bold text-foreground">{usersCount}</div>
               <p className="text-xs text-muted-foreground">
                 Registered users
               </p>
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
           </Card>
           <Card className="border border-gray-200 dark:border-gray-700 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Database Status
               </CardTitle>
               <User className="h-4 w-4 text-muted-foreground" />

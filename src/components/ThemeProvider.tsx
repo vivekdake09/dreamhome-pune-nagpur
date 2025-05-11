@@ -42,6 +42,7 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
+      document.body.style.colorScheme = systemTheme;
       return;
     }
 
@@ -49,6 +50,15 @@ export function ThemeProvider({
     
     // This forces a re-render of components that depend on CSS variables
     document.body.style.colorScheme = theme;
+    
+    // Force refresh of text colors by applying theme-specific text classes
+    if (theme === 'dark') {
+      document.body.classList.add('text-white');
+      document.body.classList.remove('text-black');
+    } else {
+      document.body.classList.add('text-black');
+      document.body.classList.remove('text-white');
+    }
   }, [theme]);
 
   const value = {
