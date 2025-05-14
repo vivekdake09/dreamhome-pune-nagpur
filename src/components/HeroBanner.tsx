@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+import FilterPanel from './FilterPanel';
 
 const HeroBanner: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
 
   const backgroundImageUrl = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1920&auto=format&fit=crop";
@@ -60,53 +60,9 @@ const HeroBanner: React.FC = () => {
             Explore premium flats, row houses & villas all in one place
           </p>
 
-          {/* Search box */}
+          {/* Search Filter Box */}
           <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="relative">
-              <div className="flex">
-                <div className="relative flex-grow">
-                  <input
-                    type="text"
-                    placeholder="Search by location, property name..."
-                    className="w-full px-4 py-3 rounded-l-md border-0 focus:ring-2 focus:ring-realestate-500 focus:outline-none"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  {locationPermission !== 'granted' && (
-                    <button 
-                      onClick={requestLocation}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-realestate-600"
-                      title="Use your current location"
-                    >
-                      <MapPin className="h-5 w-5" />
-                    </button>
-                  )}
-                </div>
-                <button className="bg-realestate-600 hover:bg-realestate-700 text-white px-6 py-3 rounded-r-md transition duration-300 flex items-center">
-                  <Search className="h-5 w-5 mr-2" />
-                  <span>Search</span>
-                </button>
-              </div>
-            </div>
-            
-            {/* Quick filters */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              <button className="bg-realestate-50 hover:bg-realestate-100 text-realestate-700 px-4 py-1 rounded-full text-sm transition duration-200">
-                Ready to Move
-              </button>
-              <button className="bg-realestate-50 hover:bg-realestate-100 text-realestate-700 px-4 py-1 rounded-full text-sm transition duration-200">
-                Under Construction
-              </button>
-              <button className="bg-realestate-50 hover:bg-realestate-100 text-realestate-700 px-4 py-1 rounded-full text-sm transition duration-200">
-                1 BHK
-              </button>
-              <button className="bg-realestate-50 hover:bg-realestate-100 text-realestate-700 px-4 py-1 rounded-full text-sm transition duration-200">
-                2 BHK
-              </button>
-              <button className="bg-realestate-50 hover:bg-realestate-100 text-realestate-700 px-4 py-1 rounded-full text-sm transition duration-200">
-                Villa
-              </button>
-            </div>
+            <FilterPanel />
           </div>
         </div>
       </div>
