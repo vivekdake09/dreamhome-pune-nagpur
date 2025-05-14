@@ -90,7 +90,6 @@ const Index: React.FC = () => {
       {/* New Location Search Section */}
       <LocationSearch />
       
-      <PropertyFilter />
       
       {isLoading ? (
         <div className="flex justify-center items-center py-20">

@@ -111,12 +111,7 @@ const Properties: React.FC = () => {
                     <SelectValue placeholder="Any City" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="any">Any City</SelectItem>
-                    <SelectItem value="mumbai">Mumbai</SelectItem>
-                    <SelectItem value="pune">Pune</SelectItem>
-                    <SelectItem value="bangalore">Bangalore</SelectItem>
-                    <SelectItem value="delhi">Delhi</SelectItem>
-                    <SelectItem value="hyderabad">Hyderabad</SelectItem>
+                    <SelectItem value="any">Pune</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
