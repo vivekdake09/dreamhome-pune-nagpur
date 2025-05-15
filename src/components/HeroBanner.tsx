@@ -46,6 +46,7 @@ const HeroBanner: React.FC = () => {
 
   const toggleFilter = () => {
     setIsFilterVisible(!isFilterVisible);
+    console.log("Filter visibility toggled:", !isFilterVisible); // Debug log
   };
 
   return (
@@ -93,7 +94,7 @@ const HeroBanner: React.FC = () => {
                 <Button 
                   onClick={toggleFilter}
                   variant="outline"
-                  className="rounded-r-none border-r-0"
+                  className="rounded-none border-x-0"
                 >
                   {isFilterVisible ? <X className="mr-2 h-4 w-4" /> : <SlidersHorizontal className="mr-2 h-4 w-4" />}
                   {isFilterVisible ? "Hide Filters" : "Show Filters"}
