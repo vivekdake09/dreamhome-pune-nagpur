@@ -1,10 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import PropertyFilter from '../components/PropertyFilter';
 import PropertySection from '../components/PropertySection';
 import HomeBot from '../components/HomeBot';
 import BuilderAdCarousel from '../components/BuilderAdCarousel';
-import LocationSearch from '../components/LocationSearch';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Search, Home, SlidersHorizontal, X, Loader2 } from 'lucide-react';
 import { fetchAllProperties, PropertyData } from '../services/propertyService';
 import { PropertyCardProps } from '../components/PropertyCard';
 
@@ -12,6 +16,7 @@ const Index: React.FC = () => {
   const [properties, setProperties] = useState<PropertyData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   useEffect(() => {
     const loadProperties = async () => {
@@ -87,9 +92,133 @@ const Index: React.FC = () => {
       {/* New Builder Ad Carousel */}
       <BuilderAdCarousel />
       
-      {/* New Location Search Section */}
-      <LocationSearch />
-      
+      {/* Search and Filter Bar - Using the same filter as Properties.tsx */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input 
+                placeholder="Search by location, property name..." 
+                className="pl-10"
+              />
+            </div>
+            <Button 
+              onClick={() => setIsFilterVisible(!isFilterVisible)}
+              variant="outline"
+              className="whitespace-nowrap"
+            >
+              {isFilterVisible ? <X className="mr-2 h-4 w-4" /> : <SlidersHorizontal className="mr-2 h-4 w-4" />}
+              {isFilterVisible ? "Hide Filters" : "Show Filters"}
+            </Button>
+          </div>
+
+          {/* Filters Panel */}
+          {isFilterVisible && (
+            <div className="mt-4 p-6 border rounded-lg grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-foreground">Property Type</label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Any Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any Type</SelectItem>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="villa">Villa</SelectItem>
+                    <SelectItem value="penthouse">Penthouse</SelectItem>
+                    <SelectItem value="commercial">Commercial</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2 text-foreground">City</label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Any City" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any City</SelectItem>
+                    <SelectItem value="mumbai">Mumbai</SelectItem>
+                    <SelectItem value="pune">Pune</SelectItem>
+                    <SelectItem value="bangalore">Bangalore</SelectItem>
+                    <SelectItem value="delhi">Delhi</SelectItem>
+                    <SelectItem value="hyderabad">Hyderabad</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2 text-foreground">Bedrooms</label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="1">1+</SelectItem>
+                    <SelectItem value="2">2+</SelectItem>
+                    <SelectItem value="3">3+</SelectItem>
+                    <SelectItem value="4">4+</SelectItem>
+                    <SelectItem value="5">5+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2 text-foreground">Bathrooms</label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="1">1+</SelectItem>
+                    <SelectItem value="2">2+</SelectItem>
+                    <SelectItem value="3">3+</SelectItem>
+                    <SelectItem value="4">4+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-4 text-foreground">Price Range (₹ Cr)</label>
+                <Slider 
+                  defaultValue={[0, 5]} 
+                  max={10}
+                  step={0.5}
+                  className="my-4"
+                />
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">₹0 Cr</span>
+                  <span className="text-sm text-muted-foreground">₹10 Cr+</span>
+                </div>
+              </div>
+              
+              <div className="md:col-span-2 lg:col-span-1">
+                <label className="block text-sm font-medium mb-4 text-foreground">Area (sq.ft.)</label>
+                <Slider 
+                  defaultValue={[0, 5000]} 
+                  max={10000}
+                  step={500}
+                  className="my-4"
+                />
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">0 sq.ft.</span>
+                  <span className="text-sm text-muted-foreground">10000+ sq.ft.</span>
+                </div>
+              </div>
+              
+              <div className="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
+                <Button variant="outline">Reset</Button>
+                <Button>Apply Filters</Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
       
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
@@ -105,21 +234,21 @@ const Index: React.FC = () => {
             title="Ready to Move Properties" 
             subtitle="Move into your dream home immediately" 
             properties={ensureMinimumProperties(readyToMoveProperties, allPropertiesAsCards)} 
-            viewAllLink="#"
+            viewAllLink="/properties"
           />
           
           <PropertySection 
             title="Nearing Possession" 
             subtitle="Properties that will be ready soon" 
             properties={ensureMinimumProperties(nearingPossessionProperties, allPropertiesAsCards)} 
-            viewAllLink="#"
+            viewAllLink="/properties"
           />
           
           <PropertySection 
             title="Recently Launched" 
             subtitle="New properties with great investment potential" 
             properties={ensureMinimumProperties(recentlyLaunchedProperties, allPropertiesAsCards)} 
-            viewAllLink="#"
+            viewAllLink="/properties"
           />
         </>
       )}

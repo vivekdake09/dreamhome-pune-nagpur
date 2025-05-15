@@ -1,23 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import SearchBox from './hero/SearchBox';
-import FilterPanel from './hero/FilterPanel';
-import QuickFilters from './hero/QuickFilters';
+import { Search, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 const HeroBanner: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const backgroundImageUrl = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1920&auto=format&fit=crop";
-  
-  const quickFilters = [
-    "Ready to Move",
-    "Under Construction",
-    "1 BHK",
-    "2 BHK",
-    "Villa"
-  ];
 
   useEffect(() => {
     // Check if geolocation is supported by the browser
@@ -51,9 +42,10 @@ const HeroBanner: React.FC = () => {
     }
   };
 
-  const toggleFilter = () => {
-    setIsFilterVisible(!isFilterVisible);
-    console.log("Filter visibility toggled:", !isFilterVisible); // Debug log
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Searching for:", searchQuery);
+    // Here you would typically handle the search functionality
   };
 
   return (
@@ -78,19 +70,41 @@ const HeroBanner: React.FC = () => {
 
           {/* Search box */}
           <div className="bg-white p-4 rounded-lg shadow-lg">
-            <SearchBox 
-              searchQuery={searchQuery} 
-              setSearchQuery={setSearchQuery}
-              locationPermission={locationPermission}
-              requestLocation={requestLocation}
-              toggleFilter={toggleFilter}
-            />
+            <form onSubmit={handleSearch}>
+              <div className="relative">
+                <div className="flex">
+                  <div className="relative flex-grow">
+                    <Input
+                      type="text"
+                      placeholder="Search by location, property name..."
+                      className="w-full px-4 py-3 rounded-l-md border-0 focus:ring-2 focus:ring-realestate-500 focus:outline-none"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {locationPermission !== 'granted' && (
+                      <button 
+                        type="button"
+                        onClick={requestLocation}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-realestate-600"
+                        title="Use your current location"
+                      >
+                        <MapPin className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="bg-realestate-600 hover:bg-realestate-700 text-white px-6 py-3 rounded-r-md transition duration-300 flex items-center"
+                  >
+                    <Search className="h-5 w-5 mr-2" />
+                    <span>Search</span>
+                  </Button>
+                </div>
+              </div>
+            </form>
             
-            <QuickFilters filters={quickFilters} />
+            {/* Quick filters have been removed as requested */}
           </div>
-          
-          {/* Advanced Filters Panel */}
-          <FilterPanel isVisible={isFilterVisible} />
         </div>
       </div>
     </div>
