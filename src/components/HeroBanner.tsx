@@ -72,8 +72,8 @@ const HeroBanner: React.FC = () => {
           {/* Search box */}
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <div className="relative">
-              <div className="flex items-center">
-                <div className="flex-grow relative">
+              <div className="flex">
+                <div className="relative flex-grow">
                   <input
                     type="text"
                     placeholder="Search by location, property name..."
@@ -91,14 +91,15 @@ const HeroBanner: React.FC = () => {
                     </button>
                   )}
                 </div>
-                <Button 
+                
+                <button 
                   onClick={toggleFilter}
-                  variant="outline"
-                  className="h-full rounded-none border-l-0 border-r-0 px-4"
+                  className="bg-gray-100 text-gray-700 font-medium px-4 py-3 border-l border-gray-200 hover:bg-gray-200 transition duration-300 flex items-center"
                 >
-                  <SlidersHorizontal className="mr-2 h-4 w-4" />
-                  Show Filters
-                </Button>
+                  <SlidersHorizontal className="mr-2 h-5 w-5" />
+                  FILTER
+                </button>
+                
                 <button className="bg-realestate-600 hover:bg-realestate-700 text-white px-6 py-3 rounded-r-md transition duration-300 flex items-center">
                   <Search className="h-5 w-5 mr-2" />
                   <span>Search</span>
