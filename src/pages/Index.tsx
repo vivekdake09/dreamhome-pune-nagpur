@@ -91,9 +91,19 @@ const Index: React.FC = () => {
       
       {/* New Builder Ad Carousel */}
       <BuilderAdCarousel />
-      
+       <section className="bg-white py-8">
+         <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
+               Find Your Dream Home
+               </h2>
+                <p className="text-gray-600 text-center mb-2">
+            Search for properties by location, area, or PIN code
+          </p>
+            
+         
       {/* Search and Filter Bar - Using the same filter as Properties.tsx */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-grow">
@@ -219,7 +229,9 @@ const Index: React.FC = () => {
           )}
         </div>
       </div>
-      
+       </div>
+         </div>
+       </section>
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-realestate-600"></div>
