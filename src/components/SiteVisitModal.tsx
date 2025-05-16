@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Calendar, Clock, User, Phone, MessageSquare } from 'lucide-react';
+import { X, Calendar, Clock, User, Phone, MessageSquare, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -128,7 +128,7 @@ const SiteVisitModal: React.FC<SiteVisitModalProps> = ({
                     onChange={handleChange}
                     required
                     className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-realestate-500"
-                    placeholder="John Doe"
+                    placeholder="Enter your Full Name"
                   />
                 </div>
               </div>
@@ -149,7 +149,7 @@ const SiteVisitModal: React.FC<SiteVisitModalProps> = ({
                     onChange={handleChange}
                     required
                     className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-realestate-500"
-                    placeholder="e.g., 9876543210"
+                    placeholder="Valid Phone Number"
                   />
                 </div>
               </div>
@@ -159,15 +159,21 @@ const SiteVisitModal: React.FC<SiteVisitModalProps> = ({
                 <label className="block text-gray-700 text-sm font-medium mb-1">
                   Email Address
                 </label>
+                 <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Mail className="h-4 w-4 text-gray-400" />
+                     </div>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-realestate-500"
-                  placeholder="example@email.com"
+                  className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-realestate-500"
+                  placeholder="Enter your Valid Email"
                 />
+                 
+                </div>
               </div>
               
               {/* Date and Time */}

@@ -61,7 +61,7 @@ const Login = () => {
         description: "Welcome back!",
       });
       
-      navigate('/profile');
+      navigate('/');
     } catch (error) {
       console.error("Login error:", error);
       toast({
@@ -125,7 +125,7 @@ const Login = () => {
                     <FormLabel className="text-gray-200">Email</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="your.email@example.com" 
+                        placeholder="Enter Your Email" 
                         {...field}
                         className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                       />

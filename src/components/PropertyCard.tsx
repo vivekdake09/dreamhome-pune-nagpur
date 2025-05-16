@@ -66,7 +66,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Price Tag */}
           <div className="absolute bottom-3 right-3">
             <span className="bg-white/90 dark:bg-gray-800/90 text-realestate-800 dark:text-realestate-200 px-3 py-1 rounded-md text-sm font-semibold shadow-sm">
-              Starting from ₹{price}L
+              Starting ₹{price}L
             </span>
           </div>
         </div>
