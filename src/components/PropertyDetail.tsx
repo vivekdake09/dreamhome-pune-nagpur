@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import {
   MapPin,
   Home,
@@ -77,18 +78,61 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
   const [activeTab, setActiveTab] = useState('overview');
   const [isSiteVisitModalOpen, setSiteVisitModalOpen] = useState(false);
   
+  // References to each section for smooth scrolling
+  const overviewRef = useRef<HTMLDivElement>(null);
+  const specificationsRef = useRef<HTMLDivElement>(null);
+  const floorPlansRef = useRef<HTMLDivElement>(null);
+  const reraInfoRef = useRef<HTMLDivElement>(null);
+  const builderRef = useRef<HTMLDivElement>(null);
+  const faqsRef = useRef<HTMLDivElement>(null);
+  
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: <Info className="h-4 w-4" /> },
-    { id: 'specifications', label: 'Specifications', icon: <Grid className="h-4 w-4" /> },
-    { id: 'floor-plans', label: 'Floor Plans', icon: <Layers className="h-4 w-4" /> },
-    { id: 'rera-info', label: 'RERA Info', icon: <FileText className="h-4 w-4" /> },
-    { id: 'builder', label: 'Builder', icon: <Building className="h-4 w-4" /> },
-    { id: 'faqs', label: 'FAQs', icon: <HelpCircle className="h-4 w-4" /> }
+    { id: 'overview', label: 'Overview', icon: <Info className="h-4 w-4" />, ref: overviewRef },
+    { id: 'specifications', label: 'Specifications', icon: <Grid className="h-4 w-4" />, ref: specificationsRef },
+    { id: 'floor-plans', label: 'Floor Plans', icon: <Layers className="h-4 w-4" />, ref: floorPlansRef },
+    { id: 'rera-info', label: 'RERA Info', icon: <FileText className="h-4 w-4" />, ref: reraInfoRef },
+    { id: 'builder', label: 'Builder', icon: <Building className="h-4 w-4" />, ref: builderRef },
+    { id: 'faqs', label: 'FAQs', icon: <HelpCircle className="h-4 w-4" />, ref: faqsRef }
   ];
   
   const openSiteVisitModal = () => {
     setSiteVisitModalOpen(true);
   };
+  
+  // Handle tab click - scroll to the appropriate section
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    
+    // Find the matching tab and scroll to its ref
+    const tab = tabs.find(t => t.id === tabId);
+    if (tab && tab.ref.current) {
+      tab.ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+  
+  // Update active tab based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 200; // Offset for the sticky header
+      
+      // Check which section is currently in view
+      for (const tab of tabs) {
+        if (tab.ref.current) {
+          const element = tab.ref.current;
+          const offsetTop = element.offsetTop;
+          const offsetHeight = element.offsetHeight;
+          
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveTab(tab.id);
+            break;
+          }
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   return (
     <div className="bg-gray-50 min-h-screen pb-12">
@@ -202,14 +246,14 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
         </div>
       </div>
       
-      {/* Tabs Navigation */}
+      {/* Tabs Navigation - Sticky at the top for quick jumps */}
       <div className="bg-white shadow-sm sticky top-16 z-30">
         <div className="container mx-auto px-4">
           <div className="flex overflow-x-auto space-x-1 py-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 className={`px-4 py-3 flex items-center whitespace-nowrap transition-colors ${
                   activeTab === tab.id
                     ? 'text-realestate-600 border-b-2 border-realestate-600 font-medium'
@@ -224,14 +268,17 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
         </div>
       </div>
       
-      {/* Tab Content */}
-      <div className="container mx-auto px-4 py-8">
-        {/* Overview Tab */}
-        {activeTab === 'overview' && (
+      {/* Content - All sections are always visible and displayed sequentially */}
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        {/* Overview Section */}
+        <div ref={overviewRef} id="overview" className="scroll-mt-24">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">About This Property</h2>
+                <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                  <Info className="h-5 w-5 mr-2 text-realestate-600" />
+                  About This Property
+                </h2>
                 <p className="text-gray-700 whitespace-pre-line">
                   {description}
                 </p>
@@ -326,12 +373,15 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
               </div>
             </div>
           </div>
-        )}
+        </div>
         
-        {/* Specifications Tab */}
-        {activeTab === 'specifications' && (
+        {/* Specifications Section */}
+        <div ref={specificationsRef} id="specifications" className="scroll-mt-24">
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Property Specifications</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+              <Grid className="h-5 w-5 mr-2 text-realestate-600" />
+              Property Specifications
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
               {Object.entries(specifications).map(([key, value]) => (
                 <div key={key} className="flex justify-between py-2 border-b border-gray-100">
@@ -341,31 +391,36 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
               ))}
             </div>
           </div>
-        )}
+        </div>
         
-        {/* Floor Plans Tab */}
-        {activeTab === 'floor-plans' && floorPlans && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Floor Plans</h2>
-            <div className="space-y-8">
-              {floorPlans.map((plan, index) => (
-                <div key={index} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">{plan.title}</h3>
-                  <div className="rounded-lg overflow-hidden">
-                    <img 
-                      src={plan.image} 
-                      alt={`${plan.title} Floor Plan`} 
-                      className="w-full h-auto"
-                    />
+        {/* Floor Plans Section */}
+        {floorPlans && floorPlans.length > 0 && (
+          <div ref={floorPlansRef} id="floor-plans" className="scroll-mt-24">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <Layers className="h-5 w-5 mr-2 text-realestate-600" />
+                Floor Plans
+              </h2>
+              <div className="space-y-8">
+                {floorPlans.map((plan, index) => (
+                  <div key={index} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">{plan.title}</h3>
+                    <div className="rounded-lg overflow-hidden">
+                      <img 
+                        src={plan.image} 
+                        alt={`${plan.title} Floor Plan`} 
+                        className="w-full h-auto"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
         
-        {/* RERA Info Tab */}
-        {activeTab === 'rera-info' && (
+        {/* RERA Info Section */}
+        <div ref={reraInfoRef} id="rera-info" className="scroll-mt-24">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
               <FileText className="h-5 w-5 mr-2 text-realestate-600" />
@@ -381,12 +436,15 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
               </p>
             </div>
           </div>
-        )}
+        </div>
         
-        {/* Builder Tab */}
-        {activeTab === 'builder' && (
+        {/* Builder Section */}
+        <div ref={builderRef} id="builder" className="scroll-mt-24">
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">About the Builder</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+              <Building className="h-5 w-5 mr-2 text-realestate-600" />
+              About the Builder
+            </h2>
             <div className="flex flex-col md:flex-row gap-6">
               <div className="md:w-1/3">
                 <div className="bg-gray-100 rounded-lg p-6 flex flex-col items-center text-center">
@@ -416,11 +474,13 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
               </div>
             </div>
           </div>
-        )}
+        </div>
         
-        {/* FAQs Tab */}
-        {activeTab === 'faqs' && (
-          <PropertyFAQs faqs={faqs} />
+        {/* FAQs Section */}
+        {faqs && faqs.length > 0 && (
+          <div ref={faqsRef} id="faqs" className="scroll-mt-24">
+            <PropertyFAQs faqs={faqs} />
+          </div>
         )}
       </div>
       
