@@ -66,7 +66,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Price Tag */}
           <div className="absolute bottom-3 right-3">
             <span className="bg-white/90 dark:bg-gray-800/90 text-realestate-800 dark:text-realestate-200 px-3 py-1 rounded-md text-sm font-semibold shadow-sm">
-              {price}
+              Starting from ₹{price}L
             </span>
           </div>
         </div>
@@ -93,7 +93,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
             <div className="flex items-center text-gray-600 dark:text-gray-300">
               <Move className="h-4 w-4 mr-1" />
-              <span className="text-sm">{area}</span>
+              <span className="text-sm">{area} sq.ft.</span>
             </div>
           </div>
           
