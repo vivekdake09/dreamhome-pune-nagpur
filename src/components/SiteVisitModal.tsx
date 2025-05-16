@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { X, Calendar, Clock, User, Phone, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/lib/supabaseClient';
 
 interface SiteVisitModalProps {
   propertyId: string;
@@ -40,27 +41,49 @@ const SiteVisitModal: React.FC<SiteVisitModalProps> = ({
     
     setIsSubmitting(true);
     
-    // Here you would typically send the data to your backend
     try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Format the data for Supabase
+      const siteVisitData = {
+        property_id: propertyId,
+        property_name: propertyName,
+        visitor_name: formData.name,
+        visitor_phone: formData.phone,
+        visitor_email: formData.email,
+        visit_date: formData.date,
+        visit_time: formData.time,
+        message: formData.message,
+        status: 'pending', // Default status for new visits
+        created_at: new Date().toISOString()
+      };
       
-      console.log('Form submitted:', {
-        ...formData,
-        propertyId,
-        propertyName
-      });
+      // Insert data into Supabase table
+      const { data, error } = await supabase
+        .from('site_visits')
+        .insert([siteVisitData]);
+      
+      if (error) throw error;
+      
+      console.log('Site visit scheduled:', siteVisitData);
       
       toast.success('Site visit scheduled successfully!', {
         description: `We'll contact you shortly to confirm your visit to ${propertyName}.`,
         duration: 5000
       });
       
+      // Reset form and close modal
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        date: '',
+        time: '',
+        message: ''
+      });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error scheduling site visit:', error);
       toast.error('Failed to schedule site visit', {
-        description: 'Please try again later or contact us directly.',
+        description: error.message || 'Please try again later or contact us directly.',
       });
     } finally {
       setIsSubmitting(false);
