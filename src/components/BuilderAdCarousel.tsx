@@ -23,7 +23,7 @@ interface BuilderAd {
 const builderAds: BuilderAd[] = [
   {
     id: "1",
-    name: "Prestige Constructions",
+    name: "Developer 1",
     description: "Luxury apartments with world-class amenities in prime locations",
     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
     ctaText: "View Projects",
@@ -31,7 +31,7 @@ const builderAds: BuilderAd[] = [
   },
   {
     id: "2",
-    name: "Godrej Properties",
+    name: "Developer 2",
     description: "Premium residences with sustainable design and modern living",
     image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop&q=80",
     ctaText: "Explore Now",
@@ -39,7 +39,7 @@ const builderAds: BuilderAd[] = [
   },
   {
     id: "3",
-    name: "Lodha Group",
+    name: "Developer 3",
     description: "Iconic buildings redefining the skyline with luxury and elegance",
     image: "https://images.unsplash.com/photo-1628133287836-40bd5453bed1?w=800&auto=format&fit=crop&q=80",
     ctaText: "Book a Tour",
@@ -47,7 +47,7 @@ const builderAds: BuilderAd[] = [
   },
   {
     id: "4",
-    name: "Hiranandani Developers",
+    name: "Developer 4",
     description: "Township living with integrated facilities and premium design",
     image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80",
     ctaText: "Learn More",
@@ -55,7 +55,7 @@ const builderAds: BuilderAd[] = [
   },
   {
     id: "5",
-    name: "Shapoorji Pallonji",
+    name: "Developer 5",
     description: "Crafting landmarks with innovation and architectural excellence",
     image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&auto=format&fit=crop&q=80",
     ctaText: "Contact Now",

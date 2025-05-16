@@ -95,10 +95,10 @@ const Index: React.FC = () => {
          <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
-               Find Your Dream Home
+               Find Your Dream Home in Pune
                </h2>
                 <p className="text-gray-600 text-center mb-2">
-            Search for properties by location, area, or PIN code
+           Discover elegant homes tailored to your lifestyle.
           </p>
             
          
@@ -151,11 +151,10 @@ const Index: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="any">Any City</SelectItem>
-                    <SelectItem value="mumbai">Mumbai</SelectItem>
                     <SelectItem value="pune">Pune</SelectItem>
-                    <SelectItem value="bangalore">Bangalore</SelectItem>
+                    {/* <SelectItem value="bangalore">Bangalore</SelectItem>
                     <SelectItem value="delhi">Delhi</SelectItem>
-                    <SelectItem value="hyderabad">Hyderabad</SelectItem>
+                    <SelectItem value="hyderabad">Hyderabad</SelectItem> */}
                   </SelectContent>
                 </Select>
               </div>
@@ -278,10 +277,10 @@ const Index: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex items-center mb-4">
                 <div className="h-12 w-12 rounded-full bg-realestate-100 text-realestate-600 flex items-center justify-center font-bold text-xl">
-                  RP
+                  VD
                 </div>
                 <div className="ml-4">
-                  <h4 className="font-semibold text-gray-800">Rahul Patel</h4>
+                  <h4 className="font-semibold text-gray-800">Vivek Dake</h4>
                   <div className="flex text-yellow-400">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                   </div>
@@ -296,10 +295,10 @@ const Index: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex items-center mb-4">
                 <div className="h-12 w-12 rounded-full bg-realestate-100 text-realestate-600 flex items-center justify-center font-bold text-xl">
-                  AS
+                  AW
                 </div>
                 <div className="ml-4">
-                  <h4 className="font-semibold text-gray-800">Anjali Singh</h4>
+                  <h4 className="font-semibold text-gray-800">Ashutosh Waghire</h4>
                   <div className="flex text-yellow-400">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                   </div>

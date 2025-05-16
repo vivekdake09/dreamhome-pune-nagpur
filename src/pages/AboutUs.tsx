@@ -3,31 +3,32 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Aboutus from "@/resources/bmdh about-us.png";
 
 const AboutUs: React.FC = () => {
   const teamMembers = [
     {
-      name: "Rajesh Kumar",
+      name: "Team Member",
       position: "Founder & CEO",
-      bio: "With over 20 years of experience in real estate, Rajesh founded BookMyDreamHome with a vision to revolutionize property buying and selling in India.",
+      bio: "With over 20 years of experience in real estate, Member founded BookMyDreamHome with a vision to revolutionize property buying and selling in India.",
       image: "/placeholder.svg"
     },
     {
-      name: "Priya Sharma",
+      name: "Team Member",
       position: "Chief Operating Officer",
-      bio: "Priya oversees day-to-day operations and has helped scale BookMyDreamHome across multiple cities with her strategic leadership.",
+      bio: "Member oversees day-to-day operations and has helped scale BookMyDreamHome across multiple cities with her strategic leadership.",
       image: "/placeholder.svg"
     },
     {
-      name: "Amit Patel",
+      name: "Team Member",
       position: "Chief Technology Officer",
-      bio: "A tech enthusiast with a passion for innovation, Amit leads our development team in creating cutting-edge real estate solutions.",
+      bio: "A tech enthusiast with a passion for innovation, Member leads our development team in creating cutting-edge real estate solutions.",
       image: "/placeholder.svg"
     },
     {
-      name: "Sunita Roy",
+      name: "Team Member",
       position: "Head of Marketing",
-      bio: "Sunita brings creative strategies to connect buyers with their dream properties through targeted marketing campaigns.",
+      bio: "Member brings creative strategies to connect buyers with their dream properties through targeted marketing campaigns.",
       image: "/placeholder.svg"
     }
   ];
@@ -61,7 +62,7 @@ const AboutUs: React.FC = () => {
             </div>
             <div className="rounded-lg overflow-hidden">
               <img 
-                src="/placeholder.svg" 
+                src={Aboutus} 
                 alt="BookMyDreamHome office" 
                 className="w-full h-full object-cover"
               />
