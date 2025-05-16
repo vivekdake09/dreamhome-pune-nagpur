@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -13,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Building, Save } from 'lucide-react';
-import AvatarUpload from '@/components/profile/AvatarUpload';
+import PropertyImageUpload from '@/components/admin/PropertyImageUpload';
 import { fetchPropertyById, updateProperty } from '@/services/propertyService';
 import PropertyFAQsManager from '@/components/admin/PropertyFAQsManager';
 
@@ -292,10 +291,9 @@ const EditProperty = () => {
 
                   <div className="space-y-2">
                     <FormLabel>Property Image</FormLabel>
-                    <AvatarUpload 
-                      imageUrl={imageUrl}  // Change from currentImage to imageUrl
-                      onUpload={handleImageUpload}  // Change from onImageUploaded to onUpload
-                      type="property"
+                    <PropertyImageUpload 
+                      imageUrl={imageUrl}
+                      onUpload={handleImageUpload}
                     />
                   </div>
                 </CardContent>
