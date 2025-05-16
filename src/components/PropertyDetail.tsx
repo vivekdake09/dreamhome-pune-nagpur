@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   MapPin,
@@ -13,9 +12,12 @@ import {
   Building,
   Phone,
   Calendar,
-  Share2
+  Share2,
+  HelpCircle
 } from 'lucide-react';
 import SiteVisitModal from './SiteVisitModal';
+import PropertyFAQs from './PropertyFAQs';
+import { FAQ } from '@/services/faqService';
 
 interface PropertyDetailProps {
   id: string;
@@ -44,6 +46,7 @@ interface PropertyDetailProps {
     title: string;
     image: string;
   }[];
+  faqs?: FAQ[];
 }
 
 const PropertyDetail: React.FC<PropertyDetailProps> = ({
@@ -67,7 +70,8 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
   builderName,
   builderDescription,
   videoTour,
-  floorPlans
+  floorPlans,
+  faqs = [] // Default to empty array
 }) => {
   const [activeImage, setActiveImage] = useState(mainImage);
   const [activeTab, setActiveTab] = useState('overview');
@@ -78,7 +82,8 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
     { id: 'specifications', label: 'Specifications', icon: <Grid className="h-4 w-4" /> },
     { id: 'floor-plans', label: 'Floor Plans', icon: <Layers className="h-4 w-4" /> },
     { id: 'rera-info', label: 'RERA Info', icon: <FileText className="h-4 w-4" /> },
-    { id: 'builder', label: 'Builder', icon: <Building className="h-4 w-4" /> }
+    { id: 'builder', label: 'Builder', icon: <Building className="h-4 w-4" /> },
+    { id: 'faqs', label: 'FAQs', icon: <HelpCircle className="h-4 w-4" /> }
   ];
   
   const openSiteVisitModal = () => {
@@ -411,6 +416,11 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
               </div>
             </div>
           </div>
+        )}
+        
+        {/* FAQs Tab */}
+        {activeTab === 'faqs' && (
+          <PropertyFAQs faqs={faqs} />
         )}
       </div>
       

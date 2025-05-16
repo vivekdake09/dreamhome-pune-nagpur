@@ -6,11 +6,13 @@ import PropertyDetail from '../components/PropertyDetail';
 import HomeBot from '../components/HomeBot';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { fetchPropertyById, PropertyData } from '../services/propertyService';
+import { fetchFAQsByPropertyId, FAQ } from '../services/faqService';
 
 const PropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [isLoading, setIsLoading] = useState(true);
   const [property, setProperty] = useState<any>(null);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -74,6 +76,10 @@ const PropertyDetailPage: React.FC = () => {
         };
         
         setProperty(formattedProperty);
+        
+        // Fetch FAQs for this property
+        const propertyFaqs = await fetchFAQsByPropertyId(id);
+        setFaqs(propertyFaqs);
       } catch (err: any) {
         setError(err.message || 'Failed to load property details. Please try again later.');
         console.error('Error fetching property:', err);
@@ -172,7 +178,7 @@ const PropertyDetailPage: React.FC = () => {
             </div>
           </div>
         ) : property ? (
-          <PropertyDetail {...property} />
+          <PropertyDetail {...property} faqs={faqs} />
         ) : null}
       </div>
       
