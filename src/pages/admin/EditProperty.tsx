@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -68,7 +69,7 @@ const EditProperty = () => {
         }
 
         setProperty(propertyData);
-        setImageUrl(propertyData.image || '');
+        setImageUrl(propertyData.property_img_url_1 || '');  // Use property_img_url_1 instead of image
         
         // Set form values
         form.reset({
@@ -78,7 +79,7 @@ const EditProperty = () => {
           location: propertyData.location || '',
           bedrooms: propertyData.bedrooms ? String(propertyData.bedrooms) : '',
           bathrooms: propertyData.bathrooms ? String(propertyData.bathrooms) : '',
-          area: propertyData.area ? String(propertyData.area) : '',
+          area: propertyData.carpet_area ? String(propertyData.carpet_area) : '', // Use carpet_area instead of area
           type: propertyData.type || '',
         });
       } catch (error) {
@@ -100,9 +101,10 @@ const EditProperty = () => {
       
       const updatedProperty = {
         ...data,
-        image: imageUrl,
+        property_img_url_1: imageUrl,  // Use property_img_url_1 instead of image
         bedrooms: parseInt(data.bedrooms),
         bathrooms: parseInt(data.bathrooms),
+        carpet_area: data.area,  // Map area to carpet_area
       };
       
       await updateProperty(id, updatedProperty);
@@ -291,8 +293,8 @@ const EditProperty = () => {
                   <div className="space-y-2">
                     <FormLabel>Property Image</FormLabel>
                     <AvatarUpload 
-                      currentImage={imageUrl} 
-                      onImageUploaded={handleImageUpload} 
+                      imageUrl={imageUrl}  // Change from currentImage to imageUrl
+                      onUpload={handleImageUpload}  // Change from onImageUploaded to onUpload
                       type="property"
                     />
                   </div>

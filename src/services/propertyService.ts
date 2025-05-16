@@ -22,6 +22,8 @@ export interface PropertyData {
   property_img_url_1?: string;
   property_img_url_2?: string;
   property_vid_url?: string;
+  image?: string;  // Added missing image property
+  area?: string;   // Added missing area property
 }
 
 export async function fetchAllProperties(): Promise<PropertyData[]> {
@@ -80,7 +82,7 @@ export async function updateProperty(id: string, propertyData: Partial<PropertyD
     }
     
     if (Array.isArray(updateData.media_urls)) {
-      updateData.media_urls = JSON.stringify(updateData.media_urls);
+      updateData.media_urls = updateData.media_urls; // Keep as an array, fixed type error
     }
 
     const { data, error } = await supabase
@@ -145,6 +147,8 @@ function prepareSinglePropertyData(property: any): PropertyData {
     property_img_url_1: property.property_img_url_1,
     property_img_url_2: property.property_img_url_2,
     property_vid_url: property.property_vid_url,
+    image: property.image,
+    area: property.area,
   };
 }
 
