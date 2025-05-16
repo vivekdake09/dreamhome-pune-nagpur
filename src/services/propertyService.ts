@@ -62,6 +62,46 @@ export async function fetchPropertyById(id: string): Promise<PropertyData | null
   }
 }
 
+/**
+ * Update an existing property
+ */
+export async function updateProperty(id: string, propertyData: Partial<PropertyData>): Promise<PropertyData | null> {
+  try {
+    // Prepare data for update
+    const updateData = { ...propertyData };
+    
+    // Handle arrays that might be stored as JSON strings
+    if (Array.isArray(updateData.features_amenities)) {
+      updateData.features_amenities = JSON.stringify(updateData.features_amenities);
+    }
+    
+    if (Array.isArray(updateData.project_highlights)) {
+      updateData.project_highlights = JSON.stringify(updateData.project_highlights);
+    }
+    
+    if (Array.isArray(updateData.media_urls)) {
+      updateData.media_urls = JSON.stringify(updateData.media_urls);
+    }
+
+    const { data, error } = await supabase
+      .from('properties')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error(`Error updating property with id ${id}:`, error);
+      throw error;
+    }
+
+    return data ? prepareSinglePropertyData(data) : null;
+  } catch (error) {
+    console.error(`Failed to update property with id ${id}:`, error);
+    return null;
+  }
+}
+
 // Helper function to prepare properties data for frontend
 function preparePropertiesData(properties: any[]): PropertyData[] {
   return properties.map(property => prepareSinglePropertyData(property));

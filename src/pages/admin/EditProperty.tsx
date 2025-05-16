@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -13,8 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Building, Save } from 'lucide-react';
-import { AvatarUpload } from '@/components/profile/AvatarUpload';
-import { getProperty, updateProperty } from '@/services/propertyService';
+import AvatarUpload from '@/components/profile/AvatarUpload';
+import { fetchPropertyById, updateProperty } from '@/services/propertyService';
 import PropertyFAQsManager from '@/components/admin/PropertyFAQsManager';
 
 // Define the property form schema
@@ -60,7 +59,7 @@ const EditProperty = () => {
       
       try {
         setLoading(true);
-        const propertyData = await getProperty(id);
+        const propertyData = await fetchPropertyById(id);
         
         if (!propertyData) {
           toast.error("Property not found");
