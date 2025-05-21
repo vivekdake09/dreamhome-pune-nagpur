@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import {
   MapPin,
@@ -19,6 +18,7 @@ import {
 import SiteVisitModal from './SiteVisitModal';
 import PropertyFAQs from './PropertyFAQs';
 import { FAQ } from '@/services/faqService';
+import { toast } from "@/hooks/use-toast";
 
 interface PropertyDetailProps {
   id: string;
@@ -110,6 +110,66 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
     }
   };
   
+  // Handle share button click - copy URL to clipboard
+  const handleShareClick = () => {
+    const currentUrl = window.location.href;
+    
+    try {
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        toast({
+          title: "Link copied!",
+          description: "Property link has been copied to clipboard.",
+          duration: 3000,
+        });
+      }).catch(err => {
+        console.error('Failed to copy URL: ', err);
+        toast({
+          title: "Copy failed",
+          description: "Could not copy the link. Please try again.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      });
+    } catch (error) {
+      // Fallback for browsers that don't support clipboard API
+      console.error('Clipboard API not supported: ', error);
+      const textarea = document.createElement('textarea');
+      textarea.value = currentUrl;
+      textarea.style.position = 'fixed'; // Prevent scrolling to bottom of page
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          toast({
+            title: "Link copied!",
+            description: "Property link has been copied to clipboard.",
+            duration: 3000,
+          });
+        } else {
+          toast({
+            title: "Copy failed",
+            description: "Could not copy the link. Please try again.",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to copy URL with execCommand: ', err);
+        toast({
+          title: "Copy failed",
+          description: "Could not copy the link. Please try again.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+      
+      document.body.removeChild(textarea);
+    }
+  };
+  
   // Update active tab based on scroll position
   useEffect(() => {
     const handleScroll = () => {
@@ -180,6 +240,7 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                   <button 
                     className="text-gray-500 hover:text-gray-700"
                     title="Share property"
+                    onClick={handleShareClick}
                   >
                     <Share2 className="h-5 w-5" />
                   </button>
